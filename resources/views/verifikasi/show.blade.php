@@ -477,7 +477,7 @@
 
     @if(isset($isPeriodeLocked) && $isPeriodeLocked)
         <div class="alert alert-warning">
-            <i class="fas fa-lock"></i> <strong>Peringatan!</strong> Periode penilaian tahun {{ $nilaiKPI->tahun }} sedang terkunci. Anda tidak dapat melakukan verifikasi pada periode ini.
+            <i class="fas fa-lock"></i> <strong>Peringatan!</strong> Periode penilaian tahun {{ $realisasi->tahun }} sedang terkunci. Anda tidak dapat melakukan verifikasi pada periode ini.
         </div>
     @endif
 
@@ -491,27 +491,27 @@
                     <table class="info-table">
                         <tr>
                             <th>Kode KPI</th>
-                            <td>{{ $nilaiKPI->indikator->kode }}</td>
+                            <td>{{ $realisasi->indikator->kode }}</td>
                         </tr>
                         <tr>
                             <th>Nama KPI</th>
-                            <td>{{ $nilaiKPI->indikator->nama }}</td>
+                            <td>{{ $realisasi->indikator->nama }}</td>
                         </tr>
                         <tr>
                             <th>Bidang</th>
-                            <td>{{ $nilaiKPI->indikator->bidang->nama }}</td>
+                            <td>{{ $realisasi->indikator->bidang->nama }}</td>
                         </tr>
                         <tr>
                             <th>Pilar</th>
-                            <td>{{ $nilaiKPI->indikator->pilar->nama }}</td>
+                            <td>{{ $realisasi->indikator->pilar->nama }}</td>
                         </tr>
                         <tr>
                             <th>Satuan</th>
-                            <td>{{ $nilaiKPI->indikator->satuan }}</td>
+                            <td>{{ $realisasi->indikator->satuan }}</td>
                         </tr>
                         <tr>
                             <th>Bobot</th>
-                            <td>{{ $nilaiKPI->indikator->bobot }}%</td>
+                            <td>{{ $realisasi->indikator->bobot }}%</td>
                         </tr>
                     </table>
                 </div>
@@ -527,15 +527,15 @@
                     <table class="info-table">
                         <tr>
                             <th>Periode</th>
-                            <td>{{ $nilaiKPI->tahun }} - {{ date('F', mktime(0, 0, 0, $nilaiKPI->bulan, 1)) }}</td>
+                            <td>{{ $realisasi->tahun }} - {{ date('F', mktime(0, 0, 0, $realisasi->bulan, 1)) }}</td>
                         </tr>
                         <tr>
                             <th>Nilai</th>
-                            <td>{{ $nilaiKPI->nilai }} {{ $nilaiKPI->indikator->satuan }}</td>
+                            <td>{{ $realisasi->nilai }} {{ $realisasi->indikator->satuan }}</td>
                         </tr>
                         <tr>
                             <th>Target</th>
-                            <td>{{ $nilaiKPI->target ?? '-' }} {{ $nilaiKPI->indikator->satuan }}</td>
+                            <td>{{ $realisasi->target ?? '-' }} {{ $realisasi->indikator->satuan }}</td>
                         </tr>
                         <tr>
                             <th>Persentase</th>
@@ -543,24 +543,24 @@
                                 <div class="progress mb-2">
                                     @php
                                         $progressClass = 'bg-danger';
-                                        if ($nilaiKPI->persentase >= 70) {
+                                        if ($realisasi->persentase >= 70) {
                                             $progressClass = 'bg-success';
-                                        } elseif ($nilaiKPI->persentase >= 50) {
+                                        } elseif ($realisasi->persentase >= 50) {
                                             $progressClass = 'bg-warning';
                                         }
                                     @endphp
-                                    <div class="progress-bar {{ $progressClass }}" role="progressbar" style="width: {{ $nilaiKPI->persentase }}%" aria-valuenow="{{ $nilaiKPI->persentase }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="progress-bar {{ $progressClass }}" role="progressbar" style="width: {{ $realisasi->persentase }}%" aria-valuenow="{{ $realisasi->persentase }}" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
-                                {{ number_format($nilaiKPI->persentase, 2) }}%
+                                {{ number_format($realisasi->persentase, 2) }}%
                             </td>
                         </tr>
                         <tr>
                             <th>Diinput Oleh</th>
-                            <td>{{ $nilaiKPI->user->name }}</td>
+                            <td>{{ $realisasi->user->name }}</td>
                         </tr>
                         <tr>
                             <th>Tanggal Input</th>
-                            <td>{{ $nilaiKPI->created_at->format('d-m-Y H:i') }}</td>
+                            <td>{{ $realisasi->created_at->format('d-m-Y H:i') }}</td>
                         </tr>
                     </table>
                 </div>
@@ -576,16 +576,16 @@
             <div class="mb-3">
                 <label class="form-label">Keterangan</label>
                 <div class="form-keterangan">
-                    {!! nl2br(e($nilaiKPI->keterangan)) ?: '<em>Tidak ada keterangan</em>' !!}
+                    {!! nl2br(e($realisasi->keterangan)) ?: '<em>Tidak ada keterangan</em>' !!}
                 </div>
             </div>
 
-            @if($nilaiKPI->bukti_url)
+            @if($realisasi->bukti_url)
                 <div class="mb-3">
                     <label class="form-label">Bukti Pendukung</label>
                     <div class="bukti-file">
                         <i class="fas fa-file-alt"></i>
-                        <a href="{{ asset('storage/' . $nilaiKPI->bukti_url) }}" target="_blank" class="btn-unduh">
+                        <a href="{{ asset('storage/' . $realisasi->bukti_url) }}" target="_blank" class="btn-unduh">
                             <i class="fas fa-download"></i> Lihat/Unduh Bukti
                         </a>
                     </div>
@@ -596,7 +596,7 @@
 
     <div class="action-buttons fade-in" style="animation-delay: 0.4s">
         @if(!isset($isPeriodeLocked) || !$isPeriodeLocked)
-        <form action="{{ route('verifikasi.update', $nilaiKPI->id) }}" method="POST" class="me-2">
+        <form action="{{ route('verifikasi.update', $realisasi->id) }}" method="POST" class="me-2">
             @csrf
             @method('PUT')
             <button type="submit" class="btn btn-success" onclick="return confirm('Anda yakin ingin memverifikasi nilai KPI ini?')">
@@ -619,7 +619,7 @@
 <div class="modal fade" id="modalTolak" tabindex="-1" aria-labelledby="modalTolakLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="{{ route('verifikasi.destroy', $nilaiKPI->id) }}" method="POST">
+            <form action="{{ route('verifikasi.destroy', $realisasi->id) }}" method="POST">
                 @csrf
                 @method('DELETE')
                 <div class="modal-header">
@@ -648,6 +648,7 @@
     </div>
 </div>
 @endsection
+
 
 @section('scripts')
 <script>

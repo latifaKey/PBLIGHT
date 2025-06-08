@@ -32,5 +32,6 @@
         @else
             <li><span class="disabled next">&raquo;</span></li>
         @endif
+        
     </ul>
 @endif

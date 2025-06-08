@@ -12,20 +12,25 @@ use Carbon\Carbon;
 
 class RealisasiController extends Controller
 {
+
 public function index(Request $request)
 {
     $user = Auth::user();
-    $tahun = $request->tahun ?? Carbon::now()->year;
-    $bulan = $request->bulan ?? Carbon::now()->month;
-    $periodeTipe = $request->periode_tipe ?? 'bulanan';
 
-    $indikatorsQuery = Indikator::with(['pilar', 'bidang'])
-        ->where('aktif', true);
+    $tahun = $request->input('tahun', date('Y'));
+    $bulan = $request->input('bulan', date('n'));
+    $tanggal = $request->input('tanggal');
 
+    if (!$tanggal) {
+        $tanggal = Carbon::createFromDate($tahun, $bulan, 1)->toDateString();
+    }
+
+    $indikatorsQuery = Indikator::with(['pilar', 'bidang']);
+
+    // Filter role
     if ($user->isMasterAdmin()) {
-        // Tidak ada filter tambahan
+        // master admin lihat semua indikator
     } elseif ($user->isAdmin()) {
-        // Filter berdasarkan bidang admin
         $bidang = $user->getBidang();
         if (!$bidang) {
             return redirect()->route('dashboard')->with('error', 'Bidang tidak ditemukan.');
@@ -35,55 +40,40 @@ public function index(Request $request)
         return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki akses ke fitur ini.');
     }
 
-    // Pagination dan query string untuk filter
+    // Eager loading realisasi, filter sesuai user dan tanggal
+    $indikatorsQuery->with(['realisasis' => function ($query) use ($user, $tanggal) {
+        $query->where('user_id', $user->id)
+              ->whereDate('tanggal', $tanggal);
+    }]);
+
     $indikators = $indikatorsQuery->orderBy('kode')->paginate(10)->withQueryString();
 
-    // Tambahkan data realisasi ke setiap indikator
-    foreach ($indikators as $indikator) {
-        $realisasiQuery = Realisasi::where('indikator_id', $indikator->id)
+    // Untuk tiap indikator, ambil realisasi (jika ada)
+foreach ($indikators as $indikator) {
+    if ($user->isMasterAdmin()) {
+        // Master admin ambil realisasi siapa pun yang ada duluan
+        $realisasi = Realisasi::where('indikator_id', $indikator->id)
+            ->whereDate('tanggal', $tanggal)
+            ->first();
+    } else {
+        // Admin biasa atau PIC lihat berdasarkan user login
+        $realisasi = Realisasi::where('indikator_id', $indikator->id)
             ->where('user_id', $user->id)
-            ->where('tahun', $tahun)
-            ->where('bulan', $bulan)
-            ->where('periode_tipe', $periodeTipe);
-
-        if ($periodeTipe == 'mingguan') {
-            $minggu = $request->minggu ?? 1;
-            $realisasiQuery->where('minggu', $minggu);
-        }
-
-        $realisasi = $realisasiQuery->orderBy('tanggal', 'desc')->first();
-
-        $indikator->realisasi = $realisasi->nilai ?? 0;
-        $indikator->persentase = $realisasi->persentase ?? 0;
-        $indikator->keterangan = $realisasi->keterangan ?? '';
-        $indikator->diverifikasi = $realisasi->diverifikasi ?? false;
-        $indikator->nilai_id = $realisasi->id ?? null;
+            ->whereDate('tanggal', $tanggal)
+            ->first();
     }
 
-    // ===============================
-    // Tambahan untuk data harian
-    // ===============================
-
-    $tanggal = $request->input('tanggal', Carbon::now()->toDateString());
-
-    $realisasiHarian = Realisasi::where('user_id', $user->id)
-        ->whereDate('tanggal', $tanggal)
-        ->with('indikator')
-        ->get();
-
-    // Semua indikator aktif untuk referensi input harian
-    $indikatorsHarian = Indikator::where('aktif', true)->get();
-
-    return view('realisasi.index', compact(
-        'indikators',
-        'tahun',
-        'bulan',
-        'periodeTipe',
-        'tanggal',
-        'realisasiHarian',
-        'indikatorsHarian'
-    ));
+    $indikator->realisasi = $realisasi;
+    $indikator->persentase = $realisasi->persentase ?? 0;
+    $indikator->nilai_id = $realisasi->id ?? null;
 }
+
+
+    return view('realisasi.index', compact('indikators', 'tanggal', 'tahun', 'bulan'));
+}
+
+
+
 
 public function create($indikatorId)
 {

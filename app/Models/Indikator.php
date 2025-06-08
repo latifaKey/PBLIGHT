@@ -123,4 +123,29 @@ class Indikator extends Model
     {
         return $this->nama;
     }
+
+    /**
+     * Relasi realisasis filtered by user_id dan tanggal (tanpa parameter)
+     * Digunakan untuk eager loading dengan filter dinamis
+     * @return HasMany
+     */
+    public function realisasisFiltered()
+    {
+        return $this->hasMany(Realisasi::class, 'indikator_id');
+    }
+
+    /**
+     * Ambil satu realisasi spesifik untuk user dan tanggal tertentu (fungsi biasa, bukan relasi)
+     *
+     * @param int $userId
+     * @param string $tanggal (format 'Y-m-d')
+     * @return Realisasi|null
+     */
+    public function getRealisasiForUserTanggal(int $userId, string $tanggal)
+    {
+        return $this->realisasis()
+            ->where('user_id', $userId)
+            ->whereDate('tanggal', $tanggal)
+            ->first();
+    }
 }

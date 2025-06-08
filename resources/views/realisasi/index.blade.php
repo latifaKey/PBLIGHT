@@ -128,6 +128,60 @@
     font-size: 0.75rem;
     white-space: nowrap;
 }
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding-left: 0;
+    gap: 6px;
+    margin-top: 1rem;
+}
+
+.pagination li {
+    display: inline;
+}
+
+.pagination a,
+.pagination span {
+    padding: 6px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-size: 14px;
+    color: #0d6efd;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.pagination a:hover {
+    background-color: #e9ecef;
+    color: #0a58ca;
+}
+
+.pagination .current {
+    background-color: #0d6efd;
+    color: #fff;
+    font-weight: bold;
+    border-color: #0d6efd;
+}
+
+.pagination .disabled {
+    color: #6c757d;
+    cursor: not-allowed;
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+.pagination .dots {
+    color: #6c757d;
+    background-color: transparent;
+    border: none;
+    padding: 6px 12px;
+}
+
+.pagination .prev,
+.pagination .next {
+    font-weight: bold;
+}
 @media (max-width: 992px) {
     .filter-group { flex-direction: column; }
 }
@@ -135,6 +189,7 @@
     .page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
     .page-header-actions { width: 100%; justify-content: flex-start; margin-top: 10px; }
 }
+
 </style>
 @endsection
 
@@ -146,13 +201,6 @@
             <h2><i class="fas fa-chart-line me-2"></i>Realisasi KPI</h2>
             <div class="page-header-subtitle">Pengelolaan data realisasi kinerja bidang</div>
         </div>
-        <div class="page-header-actions">
-            @if(isset($indikators) && $indikators->count())
-                <div class="page-header-badge">
-                    <i class="fas fa-tasks"></i> Total Indikator: {{ $indikators->count() }}
-                </div>
-            @endif
-        </div>
     </div>
 
     @include('components.alert')
@@ -160,117 +208,38 @@
     <!-- Filter Form -->
     <div class="filter-card">
         <h5><i class="fas fa-filter me-2"></i>Filter Data Realisasi</h5>
-        <form method="GET" action="{{ route('realisasi.index') }}">
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <label class="form-label">Tahun</label>
-                    <select name="tahun" class="form-select">
-                        @for($i = date('Y'); $i >= 2020; $i--)
-                            <option value="{{ $i }}" {{ request('tahun', date('Y')) == $i ? 'selected' : '' }}>{{ $i }}</option>
-                        @endfor
-                    </select>
+        <form method="GET" action="{{ route('realisasi.index') }}" class="mb-3">
+            <div class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label for="tanggal" class="col-form-label">Pilih Tanggal</label>
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label">Bulan</label>
-                    <select name="bulan" class="form-select">
-                        @for($i = 1; $i <= 12; $i++)
-                            <option value="{{ $i }}" {{ request('bulan', date('n')) == $i ? 'selected' : '' }}>
-                                {{ DateTime::createFromFormat('!m', $i)->format('F') }}
-                            </option>
-                        @endfor
-                    </select>
+                <div class="col-auto">
+                    <input type="date" name="tanggal" id="tanggal" class="form-control" value="{{ $tanggal }}">
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label">Periode</label>
-                    <select name="periode_tipe" class="form-select">
-                        <option value="bulanan" {{ request('periode_tipe', 'bulanan') == 'bulanan' ? 'selected' : '' }}>Bulanan</option>
-                        <option value="mingguan" {{ request('periode_tipe') == 'mingguan' ? 'selected' : '' }}>Mingguan</option>
-                    </select>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Cari</button>
                 </div>
-            </div>
-            <div class="mt-3 text-end">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-search me-1"></i> Tampilkan
-                </button>
             </div>
         </form>
+
     </div>
 
-    <!-- Realisasi Harian -->
-    <div class="mt-4">
-        <h4>Realisasi Tanggal: {{ $tanggal ?? 'Tidak tersedia' }}</h4>
-
-        @if(isset($realisasiHarian) && $realisasiHarian->isEmpty())
-            <p>Belum ada data realisasi untuk tanggal ini. Silakan input data.</p>
-            <form method="POST" action="{{ route('realisasi.store') }}">
-                @csrf
-                <input type="hidden" name="tanggal" value="{{ $tanggal }}">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Indikator</th>
-                            <th>Nilai</th>
-                            <th>Keterangan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($indikators as $indikator)
-                            <tr>
-                                <td>{{ $indikator->nama }}</td>
-                                <td>
-                                    <input type="number" name="nilai[{{ $indikator->id }}]" class="form-control" required>
-                                </td>
-                                <td>
-                                    <input type="text" name="keterangan[{{ $indikator->id }}]" class="form-control">
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                <div class="text-end">
-                    <button type="submit" class="btn btn-success">Simpan Realisasi</button>
-                </div>
-            </form>
-        @elseif(isset($realisasiHarian))
-            <table class="table table-bordered mt-3">
-                <thead>
-                    <tr>
-                        <th>Indikator</th>
-                        <th>Nilai</th>
-                        <th>Keterangan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($realisasiHarian as $realisasi)
-                        <tr>
-                            <td>{{ $realisasi->indikator->nama }}</td>
-                            <td>{{ $realisasi->nilai }}</td>
-                            <td>{{ $realisasi->keterangan }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @endif
-    </div>
-
-    <!-- Data Table -->
-    <div class="table-card mt-5">
-        <div class="card-header">
-            Data Realisasi KPI
-        </div>
+    <!-- Tabel Data -->
+    <div class="table-card mt-4">
+        <div class="card-header">Data Realisasi KPI</div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th style="width:5%">No</th>
-                            <th style="width:15%">Bidang</th>
-                            <th style="width:25%">Indikator</th>
-                            <th style="width:10%">Target</th>
-                            <th style="width:10%">Realisasi</th>
-                            <th style="width:15%">Capaian</th>
-                            <th style="width:10%">Status</th>
-                            <th style="width:10%">Aksi</th>
+                            <th>No</th>
+                            <th>Bidang</th>
+                            <th>Indikator</th>
+                            <th>Target</th>
+                            <th>Realisasi</th>
+                            <th>Capaian</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -278,23 +247,11 @@
                             @php
                                 $realisasi = $indikator->realisasi ?? null;
                                 $nilai = $realisasi->nilai ?? null;
-                                $diverifikasi = $realisasi->diverifikasi ?? null;
-                                $idRealisasi = $realisasi->id ?? null;
-
                                 $persentase = $indikator->persentase ?? 0;
-                                $progressClass = 'bg-danger';
-                                if ($persentase >= 90) {
-                                    $progressClass = 'bg-success';
-                                } elseif ($persentase >= 70) {
-                                    $progressClass = 'bg-warning';
-                                }
-
-                                $user = auth()->user();
-                                $isMaster = method_exists($user, 'hasRole') ? $user->hasRole('master_admin') : ($user->role === 'master_admin');
-                                $isAdminBidang = $indikator->bidang_id == $user->bidang_id;
+                                $progressClass = $persentase >= 90 ? 'bg-success' : ($persentase >= 70 ? 'bg-warning' : 'bg-danger');
                             @endphp
                             <tr>
-                                <td>{{ $indikators->firstItem() + $index }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $indikator->bidang->nama }}</td>
                                 <td>
                                     <strong>{{ $indikator->kode }}</strong> - {{ $indikator->nama }}
@@ -304,50 +261,43 @@
                                 </td>
                                 <td>{{ number_format($indikator->target, 2) }}</td>
                                 <td>
-                                    @if($nilai !== null)
-                                        {{ number_format($nilai, 2) }}
-                                    @else
-                                        <span class="text-muted fst-italic">Belum input</span>
-                                    @endif
+                                    {{ $nilai !== null ? number_format($nilai, 2) : '-' }}
                                 </td>
                                 <td>
                                     <div class="progress-wrapper">
-                                        <div class="progress" role="progressbar" aria-valuenow="{{ $persentase }}" aria-valuemin="0" aria-valuemax="100">
+                                        <div class="progress">
                                             <div class="progress-bar {{ $progressClass }}" style="width: {{ $persentase }}%;"></div>
                                         </div>
                                         <div class="progress-value">{{ $persentase }}%</div>
                                     </div>
                                 </td>
                                 <td>
-                                    @if($diverifikasi)
-                                        <span class="status-badge verified"><i class="fas fa-check-circle"></i> Diverifikasi</span>
-                                    @elseif($nilai !== null)
-                                        <span class="status-badge pending"><i class="fas fa-hourglass-half"></i> Pending</span>
+                                    @if($realisasi && $realisasi->diverifikasi)
+                                        <span class="badge bg-success">Terverifikasi</span>
+                                    @elseif($realisasi)
+                                        <span class="badge bg-warning text-dark">Menunggu</span>
                                     @else
-                                        <span class="status-badge not-input"><i class="fas fa-times-circle"></i> Belum Input</span>
+                                        <span class="badge bg-secondary">Belum Ada</span>
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="action-buttons">
+                                    <div class="btn-group">
                                         @php
-                                            $queryParams = [
-                                                'tahun' => request('tahun', date('Y')),
-                                                'bulan' => request('bulan', date('m')),
-                                                'periode_tipe' => request('periode_tipe', 'bulanan'),
+                                            $query = [
+                                                'tahun' => request('tahun'),
+                                                'bulan' => request('bulan'),
+                                                'periode_tipe' => request('periode_tipe'),
+                                                'tanggal' => request('tanggal'),
                                             ];
                                         @endphp
 
                                         @if($indikator->nilai_id)
-                                            <a href="{{ route('realisasi.edit', ['indikator' => $indikator->id] + $queryParams) }}" class="btn btn-warning">
+                                            <a href="{{ route('realisasi.edit', ['indikator' => $indikator->id] + $query) }}" class="btn btn-warning btn-sm">
                                                 <i class="fas fa-edit"></i> Edit
                                             </a>
-
-                                            <a href="{{ route('realisasi.show', ['id' => $indikator->nilai_id]) }}" class="btn btn-info">
-                                                <i class="fas fa-eye"></i> Detail
-                                            </a>
                                         @else
-                                            <a href="{{ route('realisasi.create', ['indikator' => $indikator->id] + $queryParams) }}" class="btn btn-primary">
-                                                <i class="fas fa-plus"></i> Input Realisasi
+                                            <a href="{{ route('realisasi.create', ['indikator' => $indikator->id] + $query) }}" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-plus"></i> Input
                                             </a>
                                         @endif
                                     </div>
@@ -355,16 +305,17 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center fst-italic text-muted">Data indikator tidak ditemukan.</td>
+                                <td colspan="8" class="text-center text-muted fst-italic">Tidak ada data indikator.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
 
-            <div class="mt-3 d-flex justify-content-end">
-                {{ $indikators->withQueryString()->links() }}
-            </div>
+            <div class="d-flex justify-content-center mt-4">
+    {{ $indikators->withQueryString()->links('pagination.custom') }}
+</div>
+
         </div>
     </div>
 </div>
