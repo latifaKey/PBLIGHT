@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Realisasi;
 use App\Models\Indikator;
 use App\Models\TahunPenilaian;
+use App\Models\TargetKPI;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -13,27 +14,31 @@ use Carbon\Carbon;
 class RealisasiController extends Controller
 {
 
+
 public function index(Request $request)
 {
     $user = Auth::user();
 
-    // Ambil tanggal dari request atau pakai hari ini
-    $tahun = $request->input('tahun', date('Y'));
-    $bulan = $request->input('bulan', date('n'));
-    $tanggal = $request->input('tanggal');
-
-    if (!$tanggal) {
-        $tanggal = Carbon::today()->toDateString();
-    }
-    // Ambil tahun dan bulan dari tanggal yang digunakan
+    $tanggal = $request->input('tanggal', Carbon::today()->toDateString());
     $parsedDate = Carbon::parse($tanggal);
     $tahun = $parsedDate->year;
-    $bulan = $parsedDate->month;
-    $indikatorsQuery = Indikator::with(['pilar', 'bidang']);
 
-    // Filter role
+    $indikatorsQuery = Indikator::with([
+        'pilar',
+        'bidang',
+        'targetKPI' => function ($query) use ($tahun) {
+            $query->whereHas('tahunPenilaian', function ($q) use ($tahun) {
+                $q->where('tahun', $tahun);
+            });
+        },
+        'realisasis' => function ($query) use ($user, $tanggal) {
+            $query->where('user_id', $user->id)
+                ->whereDate('tanggal', $tanggal);
+        }
+    ]);
+
     if ($user->isMasterAdmin()) {
-        // master admin lihat semua indikator
+        // akses semua indikator
     } elseif ($user->isAdmin()) {
         $bidang = $user->getBidang();
         if (!$bidang) {
@@ -41,43 +46,40 @@ public function index(Request $request)
         }
         $indikatorsQuery->where('bidang_id', $bidang->id);
     } else {
-        return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki akses ke fitur ini.');
+        return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki akses.');
     }
-
-    // Eager loading realisasi, filter sesuai user dan tanggal
-    $indikatorsQuery->with(['realisasis' => function ($query) use ($user, $tanggal) {
-        $query->where('user_id', $user->id)
-              ->whereDate('tanggal', $tanggal);
-    }]);
 
     $indikators = $indikatorsQuery->orderBy('kode')->paginate(10)->withQueryString();
 
-    // Untuk tiap indikator, ambil realisasi (jika ada)
-foreach ($indikators as $indikator) {
-    if ($user->isMasterAdmin()) {
-        // Master admin ambil realisasi siapa pun yang ada duluan
-        $realisasi = Realisasi::where('indikator_id', $indikator->id)
-            ->whereDate('tanggal', $tanggal)
-            ->first();
-    } else {
-        // Admin biasa atau PIC lihat berdasarkan user login
-        $realisasi = Realisasi::where('indikator_id', $indikator->id)
-            ->where('user_id', $user->id)
-            ->whereDate('tanggal', $tanggal)
-            ->first();
+    foreach ($indikators as $indikator) {
+        $realisasi = $indikator->realisasis->first(); // Sudah di-eager load
+
+$targetKPI = $indikator->targetKPI
+    ->where('tahunPenilaian.tahun', $tahun)
+    ->first(); // pastikan ambil yang sesuai tahun
+$target_nilai = $targetKPI ? $targetKPI->target_tahunan : 0;
+
+        $persentase = 0;
+        if ($realisasi && $target_nilai > 0) {
+            $persentase = $targetKPI
+                ? $targetKPI->hitungPersentasePencapaian($realisasi->nilai)
+                : ($realisasi->nilai / $target_nilai) * 100;
+        }
+
+        // Tambahan atribut untuk view
+        $indikator->realisasi = $realisasi;
+        $indikator->persentase = $persentase;
+        $indikator->nilai_id = $realisasi?->id;
+        $indikator->diverifikasi = $realisasi?->diverifikasi ?? false;
+        $indikator->verifikasi_oleh = $realisasi?->verifikasi_oleh;
+        $indikator->verifikasi_pada = $realisasi?->verifikasi_pada;
+        $indikator->target_nilai = $target_nilai;
     }
 
-    $indikator->realisasi = $realisasi;
-    $indikator->persentase = $realisasi->persentase ?? 0;
-    $indikator->nilai_id = $realisasi->id ?? null;
-    $indikator->diverifikasi = $realisasi?->diverifikasi ?? false;
-    $indikator->verifikasi_oleh = $realisasi?->verifikasi_oleh;
-    $indikator->verifikasi_pada = $realisasi?->verifikasi_pada;
+    return view('realisasi.index', compact('indikators', 'tanggal', 'tahun'));
 }
 
 
-    return view('realisasi.index', compact('indikators', 'tanggal', 'tahun', 'bulan'));
-}
 
 
 

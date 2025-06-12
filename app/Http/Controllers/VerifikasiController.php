@@ -154,56 +154,84 @@ class VerifikasiController extends Controller
         return redirect()->route('verifikasi.index')->with('success', 'Realisasi berhasil ditolak.');
     }
 
+
     public function verifikasiMassal(Request $request)
-    {
-        $request->validate([
-            'nilai_ids' => 'required|array',
-            'nilai_ids.*' => 'exists:realisasis,id',
+{
+    $ids = $request->input('nilai_ids', []);
+    $user = auth()->user();
+    $ip = $request->ip();
+    $agent = $request->userAgent();
+
+    // Validasi: tidak ada yang dipilih
+    if (empty($ids) || !is_array($ids)) {
+        return redirect()->back()->with('error', 'Tidak ada realisasi yang dipilih.');
+    }
+
+    // Ambil data realisasi yang dipilih
+    $realisasiList = Realisasi::with(['indikator', 'user'])
+        ->whereIn('id', $ids)
+        ->get();
+
+    // Jika tidak ditemukan
+    if ($realisasiList->isEmpty()) {
+        return redirect()->back()->with('error', 'Data realisasi tidak ditemukan.');
+    }
+
+    $updatedCount = 0;
+    $logData = [];
+
+    foreach ($realisasiList as $realisasi) {
+        // Lewati jika sudah diverifikasi
+        if ($realisasi->diverifikasi) {
+            continue;
+        }
+
+        // Cek apakah periode dikunci
+        $tahunPenilaian = TahunPenilaian::where('tahun', $realisasi->tahun)
+            ->where('is_aktif', true)
+            ->first();
+
+        if ($tahunPenilaian && $tahunPenilaian->is_locked) {
+            continue;
+        }
+
+        // Update verifikasi
+        $realisasi->update([
+            'diverifikasi' => true,
+            'verifikasi_oleh' => $user->id,
+            'verifikasi_pada' => now(),
         ]);
 
-        $user = Auth::user();
-        $realisasis = Realisasi::with('indikator')->whereIn('id', $request->nilai_ids)->get();
+        $updatedCount++;
 
-        $tahunList = $realisasis->pluck('tahun')->unique();
-        $lockedPeriods = TahunPenilaian::whereIn('tahun', $tahunList)
-            ->where('is_locked', true)
-            ->get();
-
-        if ($lockedPeriods->count() > 0) {
-            $lockedYears = $lockedPeriods->pluck('tahun')->implode(', ');
-            return redirect()->route('verifikasi.index')
-                ->with('error', 'Periode penilaian tahun ' . $lockedYears . ' telah dikunci. Verifikasi massal tidak dapat dilakukan.');
-        }
-
-        $count = 0;
-
-        foreach ($realisasis as $realisasi) {
-            if ($realisasi->diverifikasi) continue;
-
-            $realisasi->update([
-                'diverifikasi' => true,
-                'verifikasi_oleh' => $user->id,
-                'verifikasi_pada' => Carbon::now(),
-            ]);
-
-            AktivitasLog::log(
-                $user,
-                'verify',
-                'Memverifikasi nilai KPI ' . $realisasi->indikator->kode . ' - ' . $realisasi->indikator->nama,
-                [
-                    'indikator_id' => $realisasi->indikator_id,
-                    'nilai' => $realisasi->nilai,
-                    'tahun' => $realisasi->tahun,
-                    'bulan' => $realisasi->bulan,
-                ],
-                $request->ip(),
-                $request->userAgent()
-            );
-
-            $count++;
-        }
-
-        return redirect()->route('verifikasi.index')
-            ->with('success', 'Berhasil memverifikasi ' . $count . ' realisasi.');
+        $logData[] = [
+            'id' => $realisasi->id,
+            'indikator' => $realisasi->indikator->kode ?? '-',
+            'nilai' => $realisasi->nilai,
+            'tanggal' => $realisasi->tanggal,
+            'user' => $realisasi->user->name ?? '-',
+        ];
     }
+
+    // Logging jika ada yang diverifikasi
+    if ($updatedCount > 0) {
+        AktivitasLog::log(
+            $user,
+            AktivitasLog::TYPE_VERIFY,
+            'Verifikasi Massal Realisasi KPI',
+            "Melakukan verifikasi massal terhadap {$updatedCount} realisasi KPI",
+            null,
+            $logData,
+            $ip,
+            $agent
+        );
+
+        return redirect()->back()->with('success', "Berhasil memverifikasi {$updatedCount} realisasi terpilih.");
+    }
+
+    // Tidak ada yang bisa diverifikasi
+    return redirect()->back()->with('info', 'Tidak ada realisasi yang berhasil diverifikasi. Mungkin sudah diverifikasi atau periode telah dikunci.');
+}
+
+
 }

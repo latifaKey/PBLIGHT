@@ -523,6 +523,7 @@
 </style>
 @endsection
 
+
 @section('content')
 <div class="container">
     <h2 class="verifikasi-title">Daftar KPI yang Menunggu Verifikasi</h2>
@@ -599,17 +600,16 @@
         </form>
     </div>
 
-    @if($nilaiKPIs->count() > 0)
+    @if($realisasis->count() > 0)
         <form action="{{ route('verifikasi.massal') }}" method="POST" id="form-verifikasi-massal">
             @csrf
-
             <div class="mb-3">
-                <button type="submit" class="btn btn-success" {{ isset($isPeriodeLocked) && $isPeriodeLocked ? 'disabled' : '' }} id="btn-verifikasi-massal" disabled>
-                    <i class="fas fa-check-double"></i> <span>Verifikasi Terpilih</span>
+                <button type="submit" class="btn btn-success" id="btn-verifikasi-massal" disabled>
+                    <i class="fas fa-check-double"></i> Verifikasi Terpilih
                 </button>
             </div>
 
-            <div class="table-container">
+            <div class="table-container mb-3">
                 <table class="verifikasi-table">
                     <thead>
                         <tr>
@@ -628,12 +628,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($nilaiKPIs as $kpi)
+                        @foreach($realisasis as $kpi)
                             <tr>
                                 <td>
                                     <div class="form-check">
-                                        <input class="form-check-input check-item" type="checkbox" name="nilai_ids[]"
-                                               value="{{ $kpi->id }}" {{ isset($isPeriodeLocked) && $isPeriodeLocked ? 'disabled' : '' }}>
+                                        <input class="form-check-input check-item" type="checkbox" name="nilai_ids[]" value="{{ $kpi->id }}"
+                                            {{ isset($isPeriodeLocked) && $isPeriodeLocked ? 'disabled' : '' }}>
+
                                     </div>
                                 </td>
                                 <td>{{ $kpi->indikator->kode }}</td>
@@ -647,14 +648,16 @@
                                         <a href="{{ route('verifikasi.show', $kpi->id) }}" class="btn btn-sm btn-info">
                                             <i class="fas fa-eye"></i> <span>Detail</span>
                                         </a>
+
                                         @if(!isset($isPeriodeLocked) || !$isPeriodeLocked)
-                                        <form action="{{ route('verifikasi.update', $kpi->id) }}" method="POST" style="display: inline-block;">
-                                            @csrf
-                                            @method('PUT')
-                                            <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Yakin verifikasi KPI ini?')">
-                                                <i class="fas fa-check"></i> <span>Verifikasi</span>
-                                            </button>
-                                        </form>
+                                            <form action="{{ route('verifikasi.update', $kpi->id) }}" method="POST" class="d-inline-block">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit" class="btn btn-sm btn-success"
+                                                    onclick="return confirm('Yakin verifikasi KPI ini?')">
+                                                    <i class="fas fa-check"></i> <span>Verifikasi</span>
+                                                </button>
+                                            </form>
                                         @endif
                                     </div>
                                 </td>
@@ -666,71 +669,74 @@
         </form>
 
         <div class="mt-4">
-            {{ $nilaiKPIs->appends(['tahun' => $tahun, 'bulan' => $bulan, 'bidang_id' => $bidangId])->links() }}
+            {{ $realisasis->appends(['tahun' => $tahun, 'bulan' => $bulan, 'bidang_id' => $bidangId])->links() }}
         </div>
     @else
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle"></i> Tidak ada data KPI yang menunggu verifikasi untuk periode ini.
+        <div class="alert alert-warning">
+            Tidak ada data realisasi untuk periode ini.
         </div>
     @endif
+
+
 </div>
 @endsection
+
 
 @section('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Fungsi untuk cek apakah ada checkbox yang dicentang
-        function checkSelected() {
-            const checkboxes = document.querySelectorAll('.check-item:checked');
-            document.getElementById('btn-verifikasi-massal').disabled = checkboxes.length === 0;
-        }
-
-        // Check all / uncheck all
         const checkAllBox = document.getElementById('checkAll');
-        if (checkAllBox) {
-            checkAllBox.addEventListener('change', function() {
-                const checkboxes = document.querySelectorAll('.check-item');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = checkAllBox.checked;
-                });
-                checkSelected();
-            });
+        const checkItems = document.querySelectorAll('.check-item');
+        const submitBtn = document.getElementById('btn-verifikasi-massal');
+        const form = document.getElementById('form-verifikasi-massal');
+
+        function checkSelected() {
+            const anyChecked = Array.from(checkItems).some(cb => cb.checked);
+            submitBtn.disabled = !anyChecked;
         }
 
-        // Individual check
-        const checkItems = document.querySelectorAll('.check-item');
-        checkItems.forEach(item => {
-            item.addEventListener('change', function() {
+        // Cek perubahan pada semua checkbox
+        checkItems.forEach(cb => {
+            cb.addEventListener('change', function () {
                 checkSelected();
 
-                // Update checkAll status
-                const allChecked = document.querySelectorAll('.check-item:checked').length === checkItems.length;
+                // Sinkronisasi status "check all"
                 if (checkAllBox) {
-                    checkAllBox.checked = allChecked;
+                    checkAllBox.checked = Array.from(checkItems).every(cb => cb.checked);
                 }
             });
         });
 
-        // Form submit confirm
-        const form = document.getElementById('form-verifikasi-massal');
+        // Check/uncheck all
+        if (checkAllBox) {
+            checkAllBox.addEventListener('change', function () {
+                checkItems.forEach(cb => cb.checked = checkAllBox.checked);
+                checkSelected();
+            });
+        }
+
+        // Konfirmasi sebelum submit massal
         if (form) {
-            form.addEventListener('submit', function(event) {
-                const checkboxes = document.querySelectorAll('.check-item:checked');
-                if (checkboxes.length === 0) {
-                    event.preventDefault();
+            form.addEventListener('submit', function(e) {
+                const selected = Array.from(checkItems).filter(cb => cb.checked);
+                if (selected.length === 0) {
+                    e.preventDefault();
                     alert('Silakan pilih setidaknya satu KPI untuk diverifikasi.');
                     return false;
                 }
 
-                return confirm('Anda yakin ingin memverifikasi ' + checkboxes.length + ' KPI yang dipilih?');
+                if (!confirm('Yakin ingin memverifikasi ' + selected.length + ' KPI terpilih?')) {
+                    e.preventDefault();
+                    return false;
+                }
             });
         }
 
-        // Tambahkan efek ripple pada tombol-tombol
+        // Ripple effect (optional)
         const buttons = document.querySelectorAll('.btn');
         buttons.forEach(button => {
             button.addEventListener('click', function(e) {
-                if (button.type !== 'submit' || !this.form) { // Skip for form submit buttons
+                if (button.type !== 'submit' || !button.form) {
                     const x = e.clientX - e.target.getBoundingClientRect().left;
                     const y = e.clientY - e.target.getBoundingClientRect().top;
 
@@ -739,27 +745,27 @@
                     ripple.style.left = `${x}px`;
                     ripple.style.top = `${y}px`;
 
-                    this.appendChild(ripple);
-
-                    setTimeout(() => {
-                        ripple.remove();
-                    }, 600);
+                    button.appendChild(ripple);
+                    setTimeout(() => ripple.remove(), 600);
                 }
             });
         });
 
-        // Tambahkan animasi untuk baris tabel saat pertama kali dimuat
-        const tableRows = document.querySelectorAll('.verifikasi-table tbody tr');
-        tableRows.forEach((row, index) => {
+        // Animasi masuk tabel
+        const rows = document.querySelectorAll('.verifikasi-table tbody tr');
+        rows.forEach((row, index) => {
             row.style.opacity = '0';
             row.style.transform = 'translateY(20px)';
-
             setTimeout(() => {
                 row.style.transition = 'all 0.4s ease';
                 row.style.opacity = '1';
                 row.style.transform = 'translateY(0)';
             }, 100 + (index * 50));
         });
+
+        // Jalankan sekali saat pertama
+        checkSelected();
     });
 </script>
 @endsection
+

@@ -193,6 +193,8 @@
 </style>
 @endsection
 
+@extends('layouts.app')
+
 @section('content')
 <div class="dashboard-content">
     <!-- Header -->
@@ -221,7 +223,6 @@
                 </div>
             </div>
         </form>
-
     </div>
 
     <!-- Tabel Data -->
@@ -248,6 +249,7 @@
                                 $realisasi = $indikator->realisasi ?? null;
                                 $nilai = $realisasi->nilai ?? null;
                                 $persentase = $indikator->persentase ?? 0;
+                                $targetNilai = $indikator->target_nilai ?? null;
                                 $progressClass = $persentase >= 90 ? 'bg-success' : ($persentase >= 70 ? 'bg-warning' : 'bg-danger');
                             @endphp
                             <tr>
@@ -259,17 +261,27 @@
                                         <div class="small text-muted">{{ Str::limit($indikator->deskripsi, 60) }}</div>
                                     @endif
                                 </td>
-                                <td>{{ number_format($indikator->target, 2) }}</td>
+                                <td>
+                                    @if ($targetNilai !== null)
+                                        {{ number_format($targetNilai, 2) }}
+                                    @else
+                                        <span class="text-muted fst-italic">Belum diisi</span>
+                                    @endif
+                                </td>
                                 <td>
                                     {{ $nilai !== null ? number_format($nilai, 2) : '-' }}
                                 </td>
                                 <td>
-                                    <div class="progress-wrapper">
-                                        <div class="progress">
-                                            <div class="progress-bar {{ $progressClass }}" style="width: {{ $persentase }}%;"></div>
+                                    @if ($targetNilai !== null)
+                                        <div class="progress-wrapper">
+                                            <div class="progress">
+                                                <div class="progress-bar {{ $progressClass }}" style="width: {{ $persentase }}%;"></div>
+                                            </div>
+                                            <div class="progress-value">{{ number_format($persentase, 2) }}%</div>
                                         </div>
-                                        <div class="progress-value">{{ $persentase }}%</div>
-                                    </div>
+                                    @else
+                                        <span class="text-muted fst-italic">-</span>
+                                    @endif
                                 </td>
                                 <td>
                                     @if ($indikator->diverifikasi)
@@ -281,7 +293,6 @@
                                         <span class="badge bg-warning text-dark">Belum Diverifikasi</span>
                                     @endif
                                 </td>
-
                                 <td>
                                     <div class="btn-group">
                                         @php
@@ -315,11 +326,11 @@
             </div>
 
             <div class="d-flex justify-content-center mt-4">
-    {{ $indikators->withQueryString()->links('pagination.custom') }}
-</div>
-
+                {{ $indikators->withQueryString()->links('pagination.custom') }}
+            </div>
         </div>
     </div>
 </div>
 @endsection
+
 

@@ -1964,7 +1964,7 @@ use Illuminate\Support\Str;
     });
   </script>
 
-  @yield('scripts')
+
 
   <!-- Script untuk alert password -->
   <script>
@@ -2046,5 +2046,6 @@ use Illuminate\Support\Str;
       }
     });
   </script>
+  @yield('scripts')  
 </body>
 </html>

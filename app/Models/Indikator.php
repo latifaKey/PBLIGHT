@@ -63,10 +63,14 @@ class Indikator extends Model
      * Relasi ke banyak Target KPI indikator ini
      * @return HasMany
      */
-    public function targetKPIs(): HasMany
-    {
-        return $this->hasMany(TargetKPI::class);
-    }
+    public function targetKPI()
+{
+    return $this->hasMany(TargetKPI::class, 'indikator_id');
+}
+public function targetKPIs()
+{
+    return $this->hasMany(\App\Models\TargetKPI::class, 'indikator_id');
+}
 
     /**
      * Ambil nilai realisasi (persentase) untuk tahun, bulan, dan tipe periode tertentu
