@@ -272,14 +272,16 @@
                                     </div>
                                 </td>
                                 <td>
-                                    @if($realisasi && $realisasi->diverifikasi)
+                                    @if ($indikator->diverifikasi)
                                         <span class="badge bg-success">Terverifikasi</span>
-                                    @elseif($realisasi)
-                                        <span class="badge bg-warning text-dark">Menunggu</span>
+                                        <small>oleh: {{ optional(App\Models\User::find($indikator->verifikasi_oleh))->name }}</small>
+                                        <br>
+                                        <small>{{ \Carbon\Carbon::parse($indikator->verifikasi_pada)->format('d M Y H:i') }}</small>
                                     @else
-                                        <span class="badge bg-secondary">Belum Ada</span>
+                                        <span class="badge bg-warning text-dark">Belum Diverifikasi</span>
                                     @endif
                                 </td>
+
                                 <td>
                                     <div class="btn-group">
                                         @php

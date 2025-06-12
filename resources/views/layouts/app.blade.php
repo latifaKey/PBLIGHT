@@ -1294,6 +1294,12 @@ use Illuminate\Support\Str;
   {{-- Menu untuk Master Admin (Asisten Manajer) --}}
         @if(Auth::user()->role == 'asisten_manager')
         <li>
+          <a href="{{route('dataKinerja.index')}}" class="{{ request()->routeIs('dataKinerja.*') ? 'active' : '' }}">
+            <i class="fas fa-chart-bar icon"></i>
+            <span class="menu-text">Data Kinerja</span>
+          </a>
+        </li>
+        <li>
           <a href="{{route('akun.index')}}" class="{{ request()->routeIs('akun.*') ? 'active' : '' }}">
             <i class="fas fa-users icon"></i>
             <span class="menu-text">Data Akun</span>
@@ -1311,12 +1317,7 @@ use Illuminate\Support\Str;
             <span class="menu-text">Tahun Penilaian</span>
           </a>
         </li>
-        <li>
-          <a href="{{route('dataKinerja.index')}}" class="{{ request()->routeIs('dataKinerja.*') ? 'active' : '' }}">
-            <i class="fas fa-chart-bar icon"></i>
-            <span class="menu-text">Data Kinerja</span>
-          </a>
-        </li>
+
         <li>
           <a href="{{route('targetKinerja.index')}}" class="{{ request()->routeIs('targetKinerja.*') ? 'active' : '' }}">
             <i class="fas fa-bullseye icon"></i>

@@ -17,14 +17,18 @@ public function index(Request $request)
 {
     $user = Auth::user();
 
+    // Ambil tanggal dari request atau pakai hari ini
     $tahun = $request->input('tahun', date('Y'));
     $bulan = $request->input('bulan', date('n'));
     $tanggal = $request->input('tanggal');
 
     if (!$tanggal) {
-        $tanggal = Carbon::createFromDate($tahun, $bulan, 1)->toDateString();
+        $tanggal = Carbon::today()->toDateString();
     }
-
+    // Ambil tahun dan bulan dari tanggal yang digunakan
+    $parsedDate = Carbon::parse($tanggal);
+    $tahun = $parsedDate->year;
+    $bulan = $parsedDate->month;
     $indikatorsQuery = Indikator::with(['pilar', 'bidang']);
 
     // Filter role
@@ -66,6 +70,9 @@ foreach ($indikators as $indikator) {
     $indikator->realisasi = $realisasi;
     $indikator->persentase = $realisasi->persentase ?? 0;
     $indikator->nilai_id = $realisasi->id ?? null;
+    $indikator->diverifikasi = $realisasi?->diverifikasi ?? false;
+    $indikator->verifikasi_oleh = $realisasi?->verifikasi_oleh;
+    $indikator->verifikasi_pada = $realisasi?->verifikasi_pada;
 }
 
 
