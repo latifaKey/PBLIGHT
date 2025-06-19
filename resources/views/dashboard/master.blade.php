@@ -684,6 +684,133 @@
       margin-bottom: 15px;
     }
   }
+
+  /* Kinerja Tertinggi Card */
+  .top-performer-card {
+    border-left: 4px solid #28a745;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: rgba(40, 167, 69, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .top-performer-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .top-performer-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .top-performer-title {
+    font-weight: 600;
+    color: var(--pln-text);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .top-performer-value {
+    font-weight: 700;
+    color: #28a745;
+    font-size: 1.1rem;
+  }
+
+  .top-performer-info {
+    font-size: 0.85rem;
+    color: var(--pln-text-secondary);
+  }
+
+  /* Task Overview Styling */
+  .task-overview {
+    margin-top: 20px;
+  }
+
+  .task-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--pln-border);
+  }
+
+  .task-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    flex-shrink: 0;
+  }
+
+  .task-icon.pending {
+    background-color: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+  }
+
+  .task-icon.completed {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+  }
+
+  .task-icon.urgent {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+  }
+
+  .task-content {
+    flex: 1;
+  }
+
+  .task-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--pln-text);
+    margin: 0 0 5px 0;
+  }
+
+  .task-meta {
+    display: flex;
+    font-size: 0.8rem;
+    color: var(--pln-text-secondary);
+  }
+
+  .task-meta span {
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+  }
+
+  .task-meta i {
+    margin-right: 5px;
+    font-size: 0.75rem;
+  }
+
+  .task-status {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .task-status.pending {
+    background-color: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+  }
+
+  .task-status.completed {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+  }
+
+  .task-status.urgent {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+  }
 </style>
 @endsection
 
@@ -1051,6 +1178,81 @@
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Kinerja Tertinggi dan Overview Tugas -->
+  <div class="dashboard-grid">
+    <div class="grid-span-8">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="card-title"><i class="fas fa-trophy"></i> Kinerja Tertinggi</h5>
+          <div>
+            <button class="btn btn-sm btn-light" id="refreshTopPerformers">
+              <i class="fas fa-sync-alt"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            @if(isset($poorPerformers) && count($poorPerformers) > 0)
+              @foreach($poorPerformers as $performer)
+                <div class="col-md-6">
+                  <div class="top-performer-card">
+                    <div class="top-performer-header">
+                      <h6 class="top-performer-title">{{ $performer->indikator->nama }}</h6>
+                      <span class="top-performer-value">{{ $performer->persentase }}%</span>
+                    </div>
+                    <div class="top-performer-info">
+                      <span class="badge bg-info">{{ $performer->indikator->bidang->nama }}</span>
+                      <span class="text-muted ml-2">Kode: {{ $performer->indikator->kode }}</span>
+                    </div>
+                  </div>
+                </div>
+              @endforeach
+            @else
+              <div class="col-12">
+                <div class="alert alert-info">
+                  Tidak ada data kinerja tertinggi yang tersedia.
+                </div>
+              </div>
+            @endif
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-span-4">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="card-title"><i class="fas fa-tasks"></i> Overview Tugas</h5>
+        </div>
+        <div class="card-body">
+          <div class="task-overview">
+            @if(isset($needVerification) && count($needVerification) > 0)
+              @foreach($needVerification as $task)
+                <div class="task-item">
+                  <div class="task-icon pending">
+                    <i class="fas fa-clock"></i>
+                  </div>
+                  <div class="task-content">
+                    <h6 class="task-title">{{ $task->indikator->nama }}</h6>
+                    <div class="task-meta">
+                      <span><i class="fas fa-user"></i> {{ $task->user->name }}</span>
+                      <span><i class="fas fa-calendar"></i> {{ $task->created_at->format('d M Y') }}</span>
+                    </div>
+                  </div>
+                  <span class="task-status pending">Menunggu</span>
+                </div>
+              @endforeach
+            @else
+              <div class="alert alert-success">
+                <i class="fas fa-check-circle mr-2"></i> Tidak ada tugas yang perlu ditindaklanjuti.
+              </div>
+            @endif
           </div>
         </div>
       </div>
