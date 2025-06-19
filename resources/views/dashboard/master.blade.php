@@ -38,23 +38,23 @@
   .card {
     border-radius: 12px;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: all 0.5s ease;
+    box-shadow: 0 4px 15px var(--pln-shadow);
   }
 
   .card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 8px 25px var(--pln-shadow);
   }
 
   [data-theme="light"] .card {
     background: #ffffff;
     border: 1px solid #dee2e6;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   }
 
   [data-theme="dark"] .card {
     background: var(--pln-surface);
     border: 1px solid var(--pln-border);
-    box-shadow: 0 4px 15px var(--pln-shadow);
   }
 
   .card-header {
@@ -126,28 +126,39 @@
   }
 
   .stat-icon {
-    width: 42px;
-    height: 42px;
+    width: 48px;
+    height: 48px;
     border-radius: 12px;
-    background: var(--pln-accent-bg);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--pln-light-blue);
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    transition: all 0.5s ease;
+  }
+
+  [data-theme="light"] .stat-icon {
+    background: rgba(0, 120, 176, 0.1);
+    color: #0078b0;
+  }
+
+  [data-theme="dark"] .stat-icon {
+    background: rgba(0, 156, 222, 0.15);
+    color: #4db5ff;
   }
 
   .stat-value {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 700;
     margin: 5px 0;
     color: var(--pln-text);
+    transition: color 0.5s ease;
   }
 
   .stat-description {
     font-size: 0.85rem;
     color: var(--pln-text-secondary);
     margin: 0;
+    transition: color 0.5s ease;
   }
 
   /* Chart Card Styling */
@@ -163,18 +174,27 @@
     color: var(--pln-text);
     display: flex;
     align-items: center;
+    transition: color 0.5s ease;
   }
 
   .chart-title i {
     margin-right: 8px;
-    color: var(--pln-light-blue);
+    transition: color 0.5s ease;
+  }
+
+  [data-theme="light"] .chart-title i {
+    color: #0078b0;
+  }
+
+  [data-theme="dark"] .chart-title i {
+    color: #4db5ff;
   }
 
   .chart-container {
     position: relative;
     height: 300px;
     margin: 0 auto;
-    transition: all 0.3s ease;
+    transition: all 0.5s ease;
   }
 
   .chart-container.medium {
@@ -185,11 +205,21 @@
     height: 400px;
   }
 
+  /* Gauge Center Text */
+  #gauge-center-text h3 {
+    transition: color 0.5s ease;
+  }
+
+  #gauge-center-text p {
+    transition: color 0.5s ease;
+  }
+
   /* Section Divider */
   .section-divider {
     margin: 30px 0 20px;
     border-bottom: 1px solid var(--pln-border);
     padding-bottom: 10px;
+    transition: border-color 0.5s ease;
   }
 
   .section-divider h2 {
@@ -199,11 +229,20 @@
     margin: 0;
     display: flex;
     align-items: center;
+    transition: color 0.5s ease;
   }
 
   .section-divider h2 i {
     margin-right: 10px;
-    color: var(--pln-light-blue);
+    transition: color 0.5s ease;
+  }
+
+  [data-theme="light"] .section-divider h2 i {
+    color: #0078b0;
+  }
+
+  [data-theme="dark"] .section-divider h2 i {
+    color: #4db5ff;
   }
 
   /* Table Styling */
@@ -219,13 +258,22 @@
   }
 
   .data-table thead th {
-    background: var(--pln-surface-2);
-    color: var(--pln-text);
-    font-weight: 600;
     text-align: left;
     padding: 12px 15px;
     font-size: 0.9rem;
+    font-weight: 600;
     border-bottom: 2px solid var(--pln-border);
+    transition: all 0.5s ease;
+  }
+
+  [data-theme="light"] .data-table thead th {
+    background: #f8f9fa;
+    color: #333333;
+  }
+
+  [data-theme="dark"] .data-table thead th {
+    background: var(--pln-surface-2);
+    color: var(--pln-text);
   }
 
   .data-table tbody td {
@@ -234,6 +282,7 @@
     font-size: 0.9rem;
     color: var(--pln-text);
     vertical-align: middle;
+    transition: all 0.5s ease;
   }
 
   .data-table tbody tr:hover {
@@ -248,11 +297,13 @@
   .table thead th {
     color: var(--pln-text);
     border-bottom-color: var(--pln-border);
+    transition: all 0.5s ease;
   }
 
   .table tbody td {
     color: var(--pln-text);
     border-color: var(--pln-border);
+    transition: all 0.5s ease;
   }
 
   .table-responsive {
@@ -263,6 +314,7 @@
     background-color: var(--pln-surface-2);
     color: var(--pln-text);
     border-color: var(--pln-border);
+    transition: all 0.5s ease;
   }
 
   /* Empty State */
@@ -273,6 +325,7 @@
     justify-content: center;
     padding: 30px;
     color: var(--pln-text-secondary);
+    transition: color 0.5s ease;
   }
 
   /* Text colors yang kontras dan terlihat untuk light dan dark */
@@ -323,6 +376,7 @@
     font-size: 13px;
     font-weight: 600;
     margin-left: 8px;
+    transition: all 0.5s ease;
   }
 
   .performance-indicator i {
@@ -368,7 +422,7 @@
   /* Form styling yang terintegrasi untuk light dan dark mode */
   .form-select,
   .form-control {
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: all 0.5s ease;
   }
 
   [data-theme="light"] .form-select,
@@ -389,6 +443,7 @@
   [data-theme="light"] .form-label {
     color: #333333;
     font-weight: 500;
+    transition: color 0.5s ease;
   }
 
   [data-theme="dark"] .form-select,
@@ -409,31 +464,55 @@
   [data-theme="dark"] .form-label {
     color: #f8fafc;
     font-weight: 500;
+    transition: color 0.5s ease;
   }
 
   /* Variabel untuk dark/light mode chart */
   :root {
-    --chart-grid-color: rgba(255, 255, 255, 0.1);
+    --chart-grid-color: rgba(0, 0, 0, 0.1);
+    --chart-text-color: #333333;
     --chart-success-color: rgba(40, 167, 69, 0.7);
     --chart-success-border: #28a745;
     --chart-warning-color: rgba(255, 193, 7, 0.7);
     --chart-warning-border: #ffc107;
-    --chart-primary-color: rgba(0, 156, 222, 0.3);
-    --chart-primary-border: #009cde;
-    --chart-text-color: #f8fafc;
-    --chart-background: rgba(0, 0, 0, 0.05);
+    --chart-primary-color: rgba(0, 120, 176, 0.3);
+    --chart-primary-border: #0078b0;
+    --chart-background: rgba(255, 255, 255, 0.9);
+    --chart-tooltip-bg: rgba(255, 255, 255, 0.95);
+    --chart-tooltip-text: #333333;
+    --chart-tooltip-border: #dee2e6;
+    --chart-legend-text: #333333;
+    --transition-speed: 0.5s;
   }
 
-  [data-theme="light"] {
-    --chart-grid-color: rgba(0, 0, 0, 0.1);
-    --chart-text-color: #333333;
-    --chart-background: rgba(255, 255, 255, 0.9);
+  [data-theme="dark"] {
+    --chart-grid-color: rgba(255, 255, 255, 0.1);
+    --chart-text-color: #f8fafc;
+    --chart-success-color: rgba(40, 167, 69, 0.7);
+    --chart-success-border: #34eb52;
+    --chart-warning-color: rgba(255, 193, 7, 0.7);
+    --chart-warning-border: #ffdf4f;
+    --chart-primary-color: rgba(0, 156, 222, 0.3);
+    --chart-primary-border: #4db5ff;
+    --chart-background: rgba(0, 0, 0, 0.05);
+    --chart-tooltip-bg: rgba(30, 41, 59, 0.95);
+    --chart-tooltip-text: #f8fafc;
+    --chart-tooltip-border: #334155;
+    --chart-legend-text: #f8fafc;
+    --transition-speed: 0.5s;
+  }
+
+  /* Transisi global untuk perubahan tema */
+  * {
+    transition-property: color, background-color, border-color, box-shadow;
+    transition-duration: var(--transition-speed);
+    transition-timing-function: ease;
   }
 
   /* Button dan form styling dipindahkan ke variabel tema */
   .btn-primary {
     color: #fff;
-    transition: all 0.3s ease;
+    transition: all 0.5s ease;
   }
 
   .btn-primary:hover {
@@ -467,6 +546,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
+    transition: border-color 0.5s ease;
   }
 
   .nav-tabs .nav-item {
@@ -481,7 +561,7 @@
     font-weight: 500;
     padding: 12px 20px;
     border-radius: 8px 8px 0 0;
-    transition: all 0.3s ease;
+    transition: all 0.5s ease;
     font-size: 15px;
     position: relative;
     cursor: pointer;
@@ -505,7 +585,7 @@
     border-radius: 10px;
     font-weight: 600;
     font-size: 11px;
-    transition: all 0.3s ease;
+    transition: all 0.5s ease;
     margin-left: 8px;
     box-shadow: 0 2px 5px var(--pln-shadow);
   }
@@ -516,7 +596,7 @@
 
   .tab-content > .active {
     display: block;
-    animation: fadeIn 0.3s ease;
+    animation: fadeIn 0.5s ease;
   }
 
   @keyframes fadeIn {
@@ -533,6 +613,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.5s ease;
   }
 
   .badge i {
@@ -581,35 +662,27 @@
     color: #fff;
   }
 
-  /* Table Styling untuk light dan dark mode */
-  [data-theme="light"] .data-table thead th {
-    background-color: #f0f2f5;
-    color: #333333;
-    border-bottom-color: #dee2e6;
-  }
+  /* Responsive design untuk mobile */
+  @media (max-width: 768px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
 
-  [data-theme="light"] .data-table tbody td {
-    color: #333333;
-    border-bottom-color: #dee2e6;
-  }
+    .grid-span-3,
+    .grid-span-4,
+    .grid-span-6,
+    .grid-span-8,
+    .grid-span-12 {
+      grid-column: span 1;
+    }
 
-  [data-theme="light"] .data-table tbody tr:hover {
-    background-color: rgba(0, 120, 176, 0.05);
-  }
+    .chart-container {
+      height: 250px;
+    }
 
-  [data-theme="dark"] .data-table thead th {
-    background-color: #1e293b;
-    color: #f8fafc;
-    border-bottom-color: rgba(248, 250, 252, 0.1);
-  }
-
-  [data-theme="dark"] .data-table tbody td {
-    color: #f8fafc;
-    border-bottom-color: rgba(248, 250, 252, 0.1);
-  }
-
-  [data-theme="dark"] .data-table tbody tr:hover {
-    background-color: rgba(0, 156, 222, 0.15);
+    .stat-card {
+      margin-bottom: 15px;
+    }
   }
 </style>
 @endsection
@@ -726,7 +799,7 @@
         <div class="d-flex flex-column align-items-center justify-content-center">
           <div style="position: relative; height: 200px; width: 300px;">
             <canvas id="gaugeChart"></canvas>
-            <div style="position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+            <div id="gauge-center-text" style="position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
               <h3 class="mb-0 fw-bold">{{ $data['nko'] }}%</h3>
               <p class="mb-0 small text-muted">NKO Score</p>
             </div>
@@ -745,7 +818,7 @@
     </div>
   </div>
 
-  <!-- Main Tab Content -->
+  <!-- Tab Navigation -->
   <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
       <button class="nav-link active" id="semua-tab" data-bs-toggle="tab" data-bs-target="#semua" type="button" role="tab" aria-controls="semua" aria-selected="true">
@@ -767,6 +840,7 @@
     </li>
   </ul>
 
+  <!-- Tab Content -->
   <div class="tab-content" id="myTabContent">
     <!-- Tab Semua Pilar -->
     <div class="tab-pane fade show active" id="semua" role="tabpanel" aria-labelledby="semua-tab">
@@ -794,7 +868,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @forelse($data['pilar'] ?? [] as $pilar)
+                  @forelse($data['pilar'] ?? [] as $index => $pilar)
                     <tr class="data-row">
                       <td>{{ $pilar['nama'] }}</td>
                       <td>
@@ -831,7 +905,7 @@
                         @endif
                       </td>
                       <td>
-                        <a href="{{ route('dataKinerja.pilar', $loop->iteration) }}" class="btn btn-sm btn-primary">
+                        <a href="{{ route('dataKinerja.pilar', $index + 1) }}" class="btn btn-sm btn-primary">
                           <i class="fas fa-eye mr-1"></i> Detail
                         </a>
                       </td>
@@ -874,7 +948,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @forelse(collect($data['pilar'] ?? [])->where('nilai', '>=', 80) as $pilar)
+                  @forelse(collect($data['pilar'] ?? [])->where('nilai', '>=', 80) as $index => $pilar)
                   <tr class="data-row">
                     <td>{{ $pilar['nama'] }}</td>
                     <td>
@@ -889,7 +963,13 @@
                       </span>
                     </td>
                     <td>
-                      <a href="{{ route('dataKinerja.pilar', collect($data['pilar'])->search(function($p) use ($pilar) { return $p['nama'] == $pilar['nama']; }) + 1) }}" class="btn btn-sm btn-primary">
+                      @php
+                        $pilarId = collect($data['pilar'] ?? [])->search(function($p) use ($pilar) {
+                          return $p['nama'] == $pilar['nama'];
+                        });
+                        $pilarId = $pilarId !== false ? $pilarId + 1 : 1;
+                      @endphp
+                      <a href="{{ route('dataKinerja.pilar', $pilarId) }}" class="btn btn-sm btn-primary">
                         <i class="fas fa-eye mr-1"></i> Detail
                       </a>
                     </td>
@@ -932,7 +1012,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @forelse(collect($data['pilar'] ?? [])->where('nilai', '<', 70) as $pilar)
+                  @forelse(collect($data['pilar'] ?? [])->where('nilai', '<', 70) as $index => $pilar)
                   <tr class="data-row">
                     <td>{{ $pilar['nama'] }}</td>
                     <td>
@@ -947,7 +1027,13 @@
                       </span>
                     </td>
                     <td>
-                      <a href="{{ route('dataKinerja.pilar', collect($data['pilar'])->search(function($p) use ($pilar) { return $p['nama'] == $pilar['nama']; }) + 1) }}" class="btn btn-sm btn-primary">
+                      @php
+                        $pilarId = collect($data['pilar'] ?? [])->search(function($p) use ($pilar) {
+                          return $p['nama'] == $pilar['nama'];
+                        });
+                        $pilarId = $pilarId !== false ? $pilarId + 1 : 1;
+                      @endphp
+                      <a href="{{ route('dataKinerja.pilar', $pilarId) }}" class="btn btn-sm btn-primary">
                         <i class="fas fa-eye mr-1"></i> Detail
                       </a>
                     </td>
@@ -976,7 +1062,7 @@
 @section('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
@@ -990,89 +1076,188 @@
   function getChartConfig() {
     return {
       gridColor: getCSSVariable('--chart-grid-color', 'rgba(255, 255, 255, 0.1)'),
-      textColor: getCSSVariable('--chart-text-color', 'var(--pln-text)'),
+      textColor: getCSSVariable('--chart-text-color', '#f8fafc'),
       successColor: getCSSVariable('--chart-success-color', 'rgba(40, 167, 69, 0.7)'),
       successBorder: getCSSVariable('--chart-success-border', '#28a745'),
       warningColor: getCSSVariable('--chart-warning-color', 'rgba(255, 193, 7, 0.7)'),
       warningBorder: getCSSVariable('--chart-warning-border', '#ffc107'),
       primaryColor: getCSSVariable('--chart-primary-color', 'rgba(0, 156, 222, 0.3)'),
-      primaryBorder: getCSSVariable('--chart-primary-border', '#009cde'),
-      background: getCSSVariable('--chart-background', 'rgba(0, 0, 0, 0.05)')
+      primaryBorder: getCSSVariable('--chart-primary-border', '#0078b0'),
+      background: getCSSVariable('--chart-background', 'rgba(255, 255, 255, 0.9)'),
+      tooltipBg: getCSSVariable('--chart-tooltip-bg', 'rgba(255, 255, 255, 0.95)'),
+      tooltipText: getCSSVariable('--chart-tooltip-text', '#333333'),
+      tooltipBorder: getCSSVariable('--chart-tooltip-border', '#dee2e6'),
+      legendText: getCSSVariable('--chart-legend-text', '#333333')
     };
   }
 
+  // Objek untuk menyimpan instance chart
+  const chartInstances = {
+    gaugeChart: null,
+    trendChart: null,
+    radarChart: null,
+    highPerformanceChart: null,
+    lowPerformanceChart: null
+  };
+
   // Fungsi untuk update semua chart ketika tema berubah
   function updateChartsForTheme() {
-    // Akan digunakan jika ada pemicu perubahan tema
-    window.dispatchEvent(new Event('resize'));
+    console.log('Updating charts for theme change');
+
+    // Dapatkan konfigurasi baru berdasarkan tema saat ini
+    const chartConfig = getChartConfig();
+
+    // Reinisialisasi semua chart dengan konfigurasi baru
+    initGaugeChart(chartConfig);
+    initTrendChart(chartConfig);
+
+    // Reinisialisasi chart pada tab yang aktif
+    const activeTab = document.querySelector('.tab-pane.active');
+    if (activeTab) {
+      const tabId = activeTab.id;
+
+      if (tabId === 'semua') {
+        initRadarChart(chartConfig);
+      } else if (tabId === 'kinerja-tinggi') {
+        initHighPerformanceChart(chartConfig);
+      } else if (tabId === 'kinerja-rendah') {
+        initLowPerformanceChart(chartConfig);
+      }
+    }
+
+    // Update warna teks di gauge chart
+    const gaugeText = document.getElementById('gauge-center-text');
+    if (gaugeText) {
+      const scoreElement = gaugeText.querySelector('h3');
+      const labelElement = gaugeText.querySelector('p');
+
+      if (scoreElement) {
+        scoreElement.style.color = chartConfig.textColor;
+      }
+
+      if (labelElement) {
+        labelElement.style.color = chartConfig.textColor;
+        labelElement.style.opacity = '0.7';
+      }
+    }
+
+    // Update warna teks pada tabel
+    document.querySelectorAll('.data-table').forEach(table => {
+      // Force reflow untuk memastikan transisi warna yang halus
+      table.style.display = 'none';
+      table.offsetHeight; // Trigger reflow
+      table.style.display = '';
+    });
+
+    // Update badge colors
+    document.querySelectorAll('.badge').forEach(badge => {
+      // Force reflow untuk memastikan transisi warna yang halus
+      badge.style.display = 'inline-flex';
+      badge.offsetHeight; // Trigger reflow
+      badge.style.display = 'inline-flex';
+    });
   }
 
   // Deteksi perubahan tema
-  const themeToggle = document.querySelector('.theme-switch input');
-  if (themeToggle) {
-    themeToggle.addEventListener('change', function() {
-      setTimeout(updateChartsForTheme, 200); // Berikan waktu CSS untuk berubah
-    });
-  }
+  document.addEventListener('DOMContentLoaded', function() {
+    const themeToggle = document.querySelector('.theme-switch input');
+    if (themeToggle) {
+      themeToggle.addEventListener('change', function() {
+        console.log('Theme changed, updating charts');
+        setTimeout(updateChartsForTheme, 200); // Berikan waktu CSS untuk berubah
+      });
+    }
 
-  // Tab functionality
-  $(document).ready(function() {
-    console.log('Document ready, setting up tabs');
+    // Setup default Chart.js global options
+    setupChartDefaults();
 
-    // Manual tab handling
-    $('#semua-tab').on('click', function(e) {
-      e.preventDefault();
-      console.log('Semua tab clicked');
-      $('#semua').addClass('show active');
-      $('#kinerja-tinggi').removeClass('show active');
-      $('#kinerja-rendah').removeClass('show active');
+    // Tab handlers untuk Bootstrap 5
+    const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
 
-      $('#semua-tab').addClass('active');
-      $('#tinggi-tab').removeClass('active');
-      $('#rendah-tab').removeClass('active');
-    });
+    tabs.forEach(tab => {
+      tab.addEventListener('shown.bs.tab', function(event) {
+        console.log('Tab activated:', event.target.getAttribute('data-bs-target'));
+        const tabId = event.target.getAttribute('data-bs-target').replace('#', '');
+        const chartConfig = getChartConfig();
 
-    $('#tinggi-tab').on('click', function(e) {
-      e.preventDefault();
-      console.log('Tinggi tab clicked');
-      $('#kinerja-tinggi').addClass('show active');
-      $('#semua').removeClass('show active');
-      $('#kinerja-rendah').removeClass('show active');
+        // Render chart berdasarkan tab yang aktif
+        if (tabId === 'kinerja-tinggi') {
+          initHighPerformanceChart(chartConfig);
+        }
+        else if (tabId === 'kinerja-rendah') {
+          initLowPerformanceChart(chartConfig);
+        }
+        else if (tabId === 'semua') {
+          initRadarChart(chartConfig);
+        }
 
-      $('#tinggi-tab').addClass('active');
-      $('#semua-tab').removeClass('active');
-      $('#rendah-tab').removeClass('active');
-
-      // Trigger resize untuk memastikan chart ditampilkan dengan benar
-      setTimeout(function() {
-        window.dispatchEvent(new Event('resize'));
-      }, 50);
+        // Trigger resize event untuk memastikan chart ditampilkan dengan benar
+        setTimeout(() => {
+          window.dispatchEvent(new Event('resize'));
+        }, 50);
+      });
     });
 
-    $('#rendah-tab').on('click', function(e) {
-      e.preventDefault();
-      console.log('Rendah tab clicked');
-      $('#kinerja-rendah').addClass('show active');
-      $('#semua').removeClass('show active');
-      $('#kinerja-tinggi').removeClass('show active');
+    // Inisialisasi chart untuk tab yang aktif saat halaman dimuat
+    initAllCharts();
 
-      $('#rendah-tab').addClass('active');
-      $('#semua-tab').removeClass('active');
-      $('#tinggi-tab').removeClass('active');
-
-      // Trigger resize untuk memastikan chart ditampilkan dengan benar
-      setTimeout(function() {
-        window.dispatchEvent(new Event('resize'));
-      }, 50);
-    });
+    // Pre-render charts untuk tab lain agar siap ketika tab diaktifkan
+    setTimeout(() => {
+      const chartConfig = getChartConfig();
+      initHighPerformanceChart(chartConfig);
+      initLowPerformanceChart(chartConfig);
+    }, 100);
   });
 
-  document.addEventListener('DOMContentLoaded', function() {
-    // Mengambil konfigurasi untuk chart
+  // Setup default Chart.js global options
+  function setupChartDefaults() {
+    const chartConfig = getChartConfig();
+
+    Chart.defaults.color = chartConfig.textColor;
+    Chart.defaults.borderColor = chartConfig.gridColor;
+    Chart.defaults.font.family = "'Poppins', 'Helvetica', 'Arial', sans-serif";
+
+    // Default tooltip style
+    Chart.defaults.plugins.tooltip.backgroundColor = chartConfig.tooltipBg;
+    Chart.defaults.plugins.tooltip.titleColor = chartConfig.tooltipText;
+    Chart.defaults.plugins.tooltip.bodyColor = chartConfig.tooltipText;
+    Chart.defaults.plugins.tooltip.borderColor = chartConfig.tooltipBorder;
+    Chart.defaults.plugins.tooltip.borderWidth = 1;
+    Chart.defaults.plugins.tooltip.padding = 12;
+    Chart.defaults.plugins.tooltip.cornerRadius = 8;
+    Chart.defaults.plugins.tooltip.displayColors = true;
+    Chart.defaults.plugins.tooltip.boxPadding = 4;
+
+    // Default legend style
+    Chart.defaults.plugins.legend.labels.color = chartConfig.legendText;
+    Chart.defaults.plugins.legend.labels.usePointStyle = true;
+    Chart.defaults.plugins.legend.labels.pointStyleWidth = 10;
+
+    // Animation defaults
+    Chart.defaults.animation.duration = 1000;
+    Chart.defaults.animation.easing = 'easeOutQuart';
+  }
+
+  // Fungsi untuk menginisialisasi semua chart
+  function initAllCharts() {
     const chartConfig = getChartConfig();
 
     // Gauge Chart
-    const gaugeCtx = document.getElementById('gaugeChart').getContext('2d');
+    initGaugeChart(chartConfig);
+
+    // Trend Chart
+    initTrendChart(chartConfig);
+
+    // Radar Chart untuk perbandingan antar pilar
+    initRadarChart(chartConfig);
+  }
+
+  // Gauge Chart
+  function initGaugeChart(chartConfig = getChartConfig()) {
+    const gaugeCtx = document.getElementById('gaugeChart');
+    if (!gaugeCtx) return;
+
+    const ctx = gaugeCtx.getContext('2d');
     const nkoValue = {{ $data['nko'] }};
 
     // Determine color based on value
@@ -1083,7 +1268,12 @@
       gaugeColor = chartConfig.warningBorder; // Yellow for medium values
     }
 
-    new Chart(gaugeCtx, {
+    // Destroy existing chart if exists
+    if (chartInstances.gaugeChart) {
+      chartInstances.gaugeChart.destroy();
+    }
+
+    chartInstances.gaugeChart = new Chart(ctx, {
       type: 'doughnut',
       data: {
         datasets: [{
@@ -1112,55 +1302,32 @@
       }
     });
 
-    // Pilar Charts
-    const pilarValues = @json(array_column($data['pilar'], 'nilai'));
-    const pilarColors = pilarValues.map(value => {
-      if (value >= 70) return chartConfig.successBorder;  // Green for high values
-      else if (value >= 50) return chartConfig.warningBorder;  // Yellow for medium values
-      else return '#F44336';  // Red for low values
-    });
+    // Update center text with current theme colors
+    const gaugeText = document.getElementById('gauge-center-text');
+    if (gaugeText) {
+      const scoreElement = gaugeText.querySelector('h3');
+      const labelElement = gaugeText.querySelector('p');
 
-    for (let i = 1; i <= pilarValues.length; i++) {
-      const pilarCtx = document.getElementById(`pilar${i}Chart`);
-      if (!pilarCtx) continue;
+      if (scoreElement) {
+        scoreElement.style.color = chartConfig.textColor;
+        scoreElement.style.fontSize = '2rem';
+        scoreElement.style.fontWeight = '700';
+      }
 
-      const pilarValue = pilarValues[i-1];
-      const pilarColor = pilarColors[i-1];
-
-      new Chart(pilarCtx.getContext('2d'), {
-        type: 'doughnut',
-        data: {
-          datasets: [{
-            data: [pilarValue, 100 - pilarValue],
-            backgroundColor: [
-              pilarColor,
-              'rgba(200, 200, 200, 0.1)'
-            ],
-            borderWidth: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          cutout: '75%',
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              enabled: false
-            }
-          },
-          animation: {
-            animateRotate: true,
-            animateScale: true
-          }
-        }
-      });
+      if (labelElement) {
+        labelElement.style.color = chartConfig.textColor;
+        labelElement.style.opacity = '0.7';
+        labelElement.style.fontSize = '0.85rem';
+      }
     }
+  }
 
-    // Trend Chart
-    const trendCtx = document.getElementById('trendChart').getContext('2d');
+  // Trend Chart
+  function initTrendChart(chartConfig = getChartConfig()) {
+    const trendCtx = document.getElementById('trendChart');
+    if (!trendCtx) return;
+
+    const ctx = trendCtx.getContext('2d');
     // Simulasikan data tren (ini dapat diganti dengan data aktual)
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
     const currentMonth = {{ $bulan }};
@@ -1181,7 +1348,12 @@
       }
     }
 
-    new Chart(trendCtx, {
+    // Destroy existing chart if exists
+    if (chartInstances.trendChart) {
+      chartInstances.trendChart.destroy();
+    }
+
+    chartInstances.trendChart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: months,
@@ -1191,7 +1363,7 @@
           backgroundColor: chartConfig.primaryColor,
           borderColor: chartConfig.primaryBorder,
           borderWidth: 2,
-          pointBackgroundColor: '#0a4d85',
+          pointBackgroundColor: chartConfig.primaryBorder,
           pointBorderColor: '#fff',
           pointBorderWidth: 2,
           pointRadius: 5,
@@ -1207,9 +1379,9 @@
             display: false
           },
           tooltip: {
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            titleColor: '#fff',
-            bodyColor: '#fff',
+            backgroundColor: chartConfig.tooltipBg,
+            titleColor: chartConfig.tooltipText,
+            bodyColor: chartConfig.tooltipText,
             titleFont: {
               size: 14,
               weight: 'bold'
@@ -1218,7 +1390,9 @@
               size: 13
             },
             padding: 12,
-            displayColors: false
+            displayColors: false,
+            borderColor: chartConfig.tooltipBorder,
+            borderWidth: 1
           }
         },
         scales: {
@@ -1246,292 +1420,329 @@
         }
       }
     });
+  }
 
-    // Radar Chart untuk perbandingan antar pilar
+  // Radar Chart untuk perbandingan antar pilar
+  function initRadarChart(chartConfig = getChartConfig()) {
     const radarCtx = document.getElementById('radarChart');
-    if (radarCtx) {
-      const pilars = @json($data['pilar']);
+    if (!radarCtx) return;
 
-      if (pilars.length > 0) {
-        const labels = pilars.map(pilar => pilar.nama);
-        const values = pilars.map(pilar => pilar.nilai);
+    const pilars = @json($data['pilar']);
 
-        // Data untuk radar chart
-        new Chart(radarCtx, {
-          type: 'radar',
-          data: {
-            labels: labels,
-            datasets: [{
+    if (pilars.length > 0) {
+      const labels = pilars.map(pilar => pilar.nama);
+      const values = pilars.map(pilar => pilar.nilai);
+
+      // Destroy existing chart if exists
+      if (chartInstances.radarChart) {
+        chartInstances.radarChart.destroy();
+      }
+
+      // Data untuk radar chart
+      chartInstances.radarChart = new Chart(radarCtx.getContext('2d'), {
+        type: 'radar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Nilai Kinerja (%)',
+            data: values,
+            backgroundColor: chartConfig.primaryColor,
+            borderColor: chartConfig.primaryBorder,
+            borderWidth: 2,
+            pointBackgroundColor: chartConfig.primaryBorder,
+            pointBorderColor: '#fff',
+            pointRadius: 5,
+            pointHoverRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                stepSize: 20,
+                backdropColor: 'transparent',
+                color: chartConfig.textColor
+              },
+              grid: {
+                color: chartConfig.gridColor
+              },
+              angleLines: {
+                color: chartConfig.gridColor
+              },
+              pointLabels: {
+                color: chartConfig.textColor,
+                font: {
+                  size: 12
+                }
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              backgroundColor: chartConfig.tooltipBg,
+              titleColor: chartConfig.tooltipText,
+              bodyColor: chartConfig.tooltipText,
+              titleFont: {
+                size: 14,
+                weight: 'bold'
+              },
+              bodyFont: {
+                size: 13
+              },
+              padding: 12,
+              borderColor: chartConfig.tooltipBorder,
+              borderWidth: 1
+            }
+          },
+          elements: {
+            line: {
+              tension: 0.1
+            }
+          }
+        }
+      });
+    } else {
+      // Jika tidak ada data, tampilkan pesan kosong
+      const noDataDiv = document.createElement('div');
+      noDataDiv.className = 'empty-state';
+      noDataDiv.innerHTML = `
+        <i class="fas fa-chart-pie text-muted mb-3" style="font-size: 2.5rem;"></i>
+        <p class="text-muted">Tidak ada data pilar untuk ditampilkan.</p>
+      `;
+      radarCtx.parentNode.replaceChild(noDataDiv, radarCtx);
+    }
+  }
+
+  // Kinerja Tinggi Chart - Bar Chart
+  function initHighPerformanceChart(chartConfig = getChartConfig()) {
+    const highPerformanceCtx = document.getElementById('highPerformanceChart');
+    if (!highPerformanceCtx) return;
+
+    const highPilar = @json(collect($data['pilar'] ?? [])->where('nilai', '>=', 80)->values()->all());
+
+    if (highPilar.length > 0) {
+      const labels = highPilar.map(pilar => pilar.nama);
+      const values = highPilar.map(pilar => pilar.nilai);
+      const targetValues = highPilar.map(() => 80); // Target 80%
+
+      // Destroy existing chart if exists
+      if (chartInstances.highPerformanceChart) {
+        chartInstances.highPerformanceChart.destroy();
+      }
+
+      chartInstances.highPerformanceChart = new Chart(highPerformanceCtx.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
               label: 'Nilai Kinerja (%)',
               data: values,
-              backgroundColor: chartConfig.primaryColor || 'rgba(0, 156, 222, 0.3)',
-              borderColor: chartConfig.primaryBorder || '#009cde',
+              backgroundColor: chartConfig.successColor,
+              borderColor: chartConfig.successBorder,
+              borderWidth: 1,
+              borderRadius: 5,
+              barPercentage: 0.6,
+              categoryPercentage: 0.7
+            },
+            {
+              label: 'Target Minimum Kinerja Tinggi',
+              data: targetValues,
+              type: 'line',
+              backgroundColor: 'transparent',
+              borderColor: 'rgba(0, 0, 0, 0.2)',
               borderWidth: 2,
-              pointBackgroundColor: '#0a4d85',
-              pointBorderColor: '#fff',
-              pointRadius: 5,
-              pointHoverRadius: 8
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              r: {
-                beginAtZero: true,
-                max: 100,
-                ticks: {
-                  stepSize: 20,
-                  backdropColor: 'transparent',
-                  color: chartConfig.textColor || 'var(--pln-text-secondary)'
-                },
-                grid: {
-                  color: chartConfig.gridColor || 'rgba(255, 255, 255, 0.1)'
-                },
-                angleLines: {
-                  color: chartConfig.gridColor || 'rgba(255, 255, 255, 0.1)'
-                },
-                pointLabels: {
-                  color: chartConfig.textColor || 'var(--pln-text)',
-                  font: {
-                    size: 12
-                  }
+              borderDash: [5, 5],
+              pointStyle: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              grid: {
+                color: chartConfig.gridColor
+              },
+              ticks: {
+                color: chartConfig.textColor,
+                callback: function(value) {
+                  return value + '%';
                 }
               }
             },
-            plugins: {
-              legend: {
+            x: {
+              grid: {
                 display: false
               },
-              tooltip: {
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                titleColor: '#fff',
-                bodyColor: '#fff',
-                titleFont: {
-                  size: 14,
-                  weight: 'bold'
-                },
-                bodyFont: {
-                  size: 13
-                },
-                padding: 12
-              }
-            },
-            elements: {
-              line: {
-                tension: 0.1
+              ticks: {
+                color: chartConfig.textColor
               }
             }
-          }
-        });
-      } else {
-        // Jika tidak ada data, tampilkan pesan kosong
-        const noDataDiv = document.createElement('div');
-        noDataDiv.className = 'empty-state';
-        noDataDiv.innerHTML = `
-          <i class="fas fa-chart-pie text-muted mb-3" style="font-size: 2.5rem;"></i>
-          <p class="text-muted">Tidak ada data pilar untuk ditampilkan.</p>
-        `;
-        radarCtx.parentNode.replaceChild(noDataDiv, radarCtx);
-      }
-    }
-
-    // Kinerja Tinggi Chart - Bar Chart
-    const highPerformanceCtx = document.getElementById('highPerformanceChart');
-    if (highPerformanceCtx) {
-      const highPilar = @json(collect($data['pilar'])->where('nilai', '>=', 80)->values()->all());
-
-      if (highPilar.length > 0) {
-        const labels = highPilar.map(pilar => pilar.nama);
-        const values = highPilar.map(pilar => pilar.nilai);
-        const targetValues = highPilar.map(() => 80); // Target 80%
-
-        new Chart(highPerformanceCtx, {
-          type: 'bar',
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: 'Nilai Kinerja (%)',
-                data: values,
-                backgroundColor: chartConfig.successColor,
-                borderColor: chartConfig.successBorder,
-                borderWidth: 1,
-                borderRadius: 5,
-                barPercentage: 0.6,
-                categoryPercentage: 0.7
-              },
-              {
-                label: 'Target Minimum Kinerja Tinggi',
-                data: targetValues,
-                type: 'line',
-                backgroundColor: 'transparent',
-                borderColor: 'rgba(0, 0, 0, 0.2)',
-                borderWidth: 2,
-                borderDash: [5, 5],
-                pointStyle: false
-              }
-            ]
           },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: {
-                beginAtZero: true,
-                max: 100,
-                grid: {
-                  color: chartConfig.gridColor
-                },
-                ticks: {
-                  color: chartConfig.textColor,
-                  callback: function(value) {
-                    return value + '%';
-                  }
-                }
-              },
-              x: {
-                grid: {
-                  display: false
-                },
-                ticks: {
-                  color: chartConfig.textColor
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: chartConfig.legendText,
+                usePointStyle: true,
+                padding: 20,
+                font: {
+                  size: 12
                 }
               }
             },
-            plugins: {
-              legend: {
-                position: 'bottom',
-                labels: {
-                  color: chartConfig.textColor,
-                  usePointStyle: true,
-                  padding: 20,
-                  font: {
-                    size: 12
-                  }
-                }
-              },
-              tooltip: {
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                titleColor: '#fff',
-                bodyColor: '#fff',
-                padding: 12,
-                mode: 'index',
-                intersect: false
-              }
+            tooltip: {
+              backgroundColor: chartConfig.tooltipBg,
+              titleColor: chartConfig.tooltipText,
+              bodyColor: chartConfig.tooltipText,
+              padding: 12,
+              mode: 'index',
+              intersect: false,
+              borderColor: chartConfig.tooltipBorder,
+              borderWidth: 1
             }
           }
-        });
-      } else {
-        // Jika tidak ada data, tampilkan pesan kosong
+        }
+      });
+    } else {
+      // Jika tidak ada data, tampilkan pesan kosong
+      const chartContainer = highPerformanceCtx.parentNode;
+      const existingEmptyState = chartContainer.querySelector('.empty-state');
+
+      if (!existingEmptyState) {
         const noDataDiv = document.createElement('div');
         noDataDiv.className = 'empty-state';
         noDataDiv.innerHTML = `
           <i class="fas fa-chart-bar text-muted mb-3" style="font-size: 2.5rem;"></i>
           <p class="text-muted">Tidak ada data kinerja tinggi untuk ditampilkan.</p>
         `;
-        highPerformanceCtx.parentNode.replaceChild(noDataDiv, highPerformanceCtx);
+        chartContainer.replaceChild(noDataDiv, highPerformanceCtx);
       }
     }
+  }
 
-    // Perlu Perhatian Chart - Horizontal Bar Chart
+  // Perlu Perhatian Chart - Horizontal Bar Chart
+  function initLowPerformanceChart(chartConfig = getChartConfig()) {
     const lowPerformanceCtx = document.getElementById('lowPerformanceChart');
-    if (lowPerformanceCtx) {
-      const lowPilar = @json(collect($data['pilar'])->where('nilai', '<', 70)->values()->all());
+    if (!lowPerformanceCtx) return;
 
-      if (lowPilar.length > 0) {
-        const labels = lowPilar.map(pilar => pilar.nama);
-        const values = lowPilar.map(pilar => pilar.nilai);
-        const targetValues = lowPilar.map(() => 70); // Target 70%
+    const lowPilar = @json(collect($data['pilar'] ?? [])->where('nilai', '<', 70)->values()->all());
 
-        new Chart(lowPerformanceCtx, {
-          type: 'bar',
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: 'Nilai Kinerja (%)',
-                data: values,
-                backgroundColor: chartConfig.warningColor,
-                borderColor: chartConfig.warningBorder,
-                borderWidth: 1,
-                borderRadius: 5,
-                barPercentage: 0.6,
-                categoryPercentage: 0.7
+    if (lowPilar.length > 0) {
+      const labels = lowPilar.map(pilar => pilar.nama);
+      const values = lowPilar.map(pilar => pilar.nilai);
+      const targetValues = lowPilar.map(() => 70); // Target 70%
+
+      // Destroy existing chart if exists
+      if (chartInstances.lowPerformanceChart) {
+        chartInstances.lowPerformanceChart.destroy();
+      }
+
+      chartInstances.lowPerformanceChart = new Chart(lowPerformanceCtx.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Nilai Kinerja (%)',
+              data: values,
+              backgroundColor: chartConfig.warningColor,
+              borderColor: chartConfig.warningBorder,
+              borderWidth: 1,
+              borderRadius: 5,
+              barPercentage: 0.6,
+              categoryPercentage: 0.7
+            },
+            {
+              label: 'Target Minimum',
+              data: targetValues,
+              type: 'line',
+              backgroundColor: 'transparent',
+              borderColor: 'rgba(0, 0, 0, 0.2)',
+              borderWidth: 2,
+              borderDash: [5, 5],
+              pointStyle: false
+            }
+          ]
+        },
+        options: {
+          indexAxis: 'y', // Horizontal bar
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              beginAtZero: true,
+              max: 100,
+              grid: {
+                color: chartConfig.gridColor
               },
-              {
-                label: 'Target Minimum',
-                data: targetValues,
-                type: 'line',
-                backgroundColor: 'transparent',
-                borderColor: 'rgba(0, 0, 0, 0.2)',
-                borderWidth: 2,
-                borderDash: [5, 5],
-                pointStyle: false
-              }
-            ]
-          },
-          options: {
-            indexAxis: 'y', // Horizontal bar
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              x: {
-                beginAtZero: true,
-                max: 100,
-                grid: {
-                  color: chartConfig.gridColor
-                },
-                ticks: {
-                  color: chartConfig.textColor,
-                  callback: function(value) {
-                    return value + '%';
-                  }
-                }
-              },
-              y: {
-                grid: {
-                  display: false
-                },
-                ticks: {
-                  color: chartConfig.textColor
+              ticks: {
+                color: chartConfig.textColor,
+                callback: function(value) {
+                  return value + '%';
                 }
               }
             },
-            plugins: {
-              legend: {
-                position: 'bottom',
-                labels: {
-                  color: chartConfig.textColor,
-                  usePointStyle: true,
-                  padding: 20,
-                  font: {
-                    size: 12
-                  }
-                }
+            y: {
+              grid: {
+                display: false
               },
-              tooltip: {
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                titleColor: '#fff',
-                bodyColor: '#fff',
-                padding: 12,
-                mode: 'index',
-                intersect: false
+              ticks: {
+                color: chartConfig.textColor
               }
             }
+          },
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: chartConfig.legendText,
+                usePointStyle: true,
+                padding: 20,
+                font: {
+                  size: 12
+                }
+              }
+            },
+            tooltip: {
+              backgroundColor: chartConfig.tooltipBg,
+              titleColor: chartConfig.tooltipText,
+              bodyColor: chartConfig.tooltipText,
+              padding: 12,
+              mode: 'index',
+              intersect: false,
+              borderColor: chartConfig.tooltipBorder,
+              borderWidth: 1
+            }
           }
-        });
-      } else {
-        // Jika tidak ada data, tampilkan pesan kosong
+        }
+      });
+    } else {
+      // Jika tidak ada data, tampilkan pesan kosong
+      const chartContainer = lowPerformanceCtx.parentNode;
+      const existingEmptyState = chartContainer.querySelector('.empty-state');
+
+      if (!existingEmptyState) {
         const noDataDiv = document.createElement('div');
         noDataDiv.className = 'empty-state';
         noDataDiv.innerHTML = `
           <i class="fas fa-check-circle text-muted mb-3" style="font-size: 2.5rem;"></i>
-          <p class="text-muted">Tidak ada pilar yang perlu perhatian. Semua kinerja baik!</p>
+          <p class="text-muted">Tidak ada pilar yang perlu perhatian saat ini.</p>
         `;
-        lowPerformanceCtx.parentNode.replaceChild(noDataDiv, lowPerformanceCtx);
+        chartContainer.replaceChild(noDataDiv, lowPerformanceCtx);
       }
     }
-  });
+  }
 </script>
 @endsection

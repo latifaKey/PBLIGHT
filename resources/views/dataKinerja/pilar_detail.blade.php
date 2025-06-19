@@ -358,7 +358,7 @@
             <h1 class="h3 mb-0 text-gray-800">Detail Pilar {{ $pilar->nama }}</h1>
         </div>
         <div class="d-flex">
-            <form action="{{ route('dataKinerja.pilar.detail', $pilar->id) }}" method="GET" class="d-flex align-items-center">
+            <form action="{{ route('dataKinerja.pilar', $pilar->id) }}" method="GET" class="d-flex align-items-center">
                 <select name="tahun" class="form-control form-control-sm mr-2">
                     @foreach(range(date('Y') - 5, date('Y') + 1) as $year)
                         <option value="{{ $year }}" {{ $tahun == $year ? 'selected' : '' }}>{{ $year }}</option>

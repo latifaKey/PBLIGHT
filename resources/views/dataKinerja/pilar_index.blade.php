@@ -357,7 +357,7 @@
                 </div>
             </div>
             <div class="mt-3 text-center">
-                <a href="{{ route('dataKinerja.pilar.detail', $pilar->id) }}" class="btn btn-sm btn-primary">
+                <a href="{{ route('dataKinerja.pilar', $pilar->id) }}" class="btn btn-sm btn-primary">
                     <i class="fas fa-search-plus fa-sm"></i> Detail
                 </a>
             </div>
