@@ -526,17 +526,17 @@
         <div class="task highlight">
           <h4>Verifikasi Data KPI</h4>
           <p>5 data menunggu verifikasi dari bidang Keuangan</p>
-          <a href="#" class="btn btn-sm btn-primary">Verifikasi Sekarang</a>
+          <a href="{{ route('verifikasi.index') }}" class="btn btn-sm btn-primary">Verifikasi Sekarang</a>
         </div>
         <div class="task">
           <h4>Manajemen Akun</h4>
           <p>2 permintaan akun baru menunggu persetujuan</p>
-          <a href="#" class="btn btn-sm btn-outline-primary">Kelola Akun</a>
+          <a href="{{ route('akun.index') }}" class="btn btn-sm btn-outline-primary">Kelola Akun</a>
         </div>
         <div class="task">
           <h4>Laporan Bulanan</h4>
           <p>Ekspor laporan KPI bulan {{ date('F', mktime(0, 0, 0, $bulan, 10)) }} {{ $tahun }}</p>
-          <a href="#" class="btn btn-sm btn-outline-primary">Ekspor PDF</a>
+          <a href="{{ route('eksporPdf.index') }}" class="btn btn-sm btn-outline-primary">Ekspor PDF</a>
         </div>
       </div>
     </div>

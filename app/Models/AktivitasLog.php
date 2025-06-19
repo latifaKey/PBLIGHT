@@ -277,10 +277,11 @@ class AktivitasLog extends Model
             'user_agent' => $userAgent,
         ];
 
-        if ($model) {
+        if ($model && is_object($model)) {
             $logData['loggable_type'] = get_class($model);
             $logData['loggable_id'] = $model->getKey();
         }
+
 
         return self::create($logData);
     }

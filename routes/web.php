@@ -10,6 +10,8 @@ use App\Http\Controllers\EksporPdfController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RealisasiController;
 use App\Http\Controllers\TahunPenilaianController;
+use App\Http\Controllers\TargetKinerjaController;
+use App\Http\Controllers\VerifikasiController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Bidang;
 use App\Models\Indikator;
@@ -117,5 +119,18 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/hapus-multiple', [AktivitasLogController::class, 'hapusMultiple'])->name('hapusMultiple');
         Route::get('/{id}', [AktivitasLogController::class, 'show'])->name('show')->where('id', '[0-9]+');
     });
+    // Routes untuk Target Kinerja
+    Route::get('/targetKinerja', [TargetKinerjaController::class, 'index'])->name('targetKinerja.index');
+    Route::get('/targetKinerja/create', [TargetKinerjaController::class, 'create'])->name('targetKinerja.create');
+    Route::post('/targetKinerja', [TargetKinerjaController::class, 'store'])->name('targetKinerja.store');
+    Route::get('/targetKinerja/{targetKinerja}/edit', [TargetKinerjaController::class, 'edit'])->name('targetKinerja.edit');
+    Route::put('/targetKinerja/{targetKinerja}', [TargetKinerjaController::class, 'update'])->name('targetKinerja.update');
+    Route::get('/targetKinerja/{targetKinerja}/approve', [TargetKinerjaController::class, 'approve'])->name('targetKinerja.approve');
+    Route::get('/targetKinerja/{targetKinerja}/unapprove', [TargetKinerjaController::class, 'unapprove'])->name('targetKinerja.unapprove');
+
+    // Verifikasi KPI
+        Route::resource('verifikasi', VerifikasiController::class)->except(['create', 'edit', 'store']);
+        Route::post('/verifikasi/massal', [VerifikasiController::class, 'verifikasiMassal'])->name('verifikasi.massal');
+
 });
 
