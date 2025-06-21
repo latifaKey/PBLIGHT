@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\ActivityLoggable;
+use App\Models\Realisasi;
 
 class Bidang extends Model
 {
@@ -45,27 +46,48 @@ class Bidang extends Model
     }
 
     /**
-     * Mendapatkan nilai rata-rata KPI bidang untuk periode tertentu
-     *
-     * @param int $tahun
-     * @param int $bulan
-     * @param string $periodeTipe
-     * @return float
+     * Mendapatkan nilai rata-rata dari semua indikator dalam bidang ini
      */
-    public function getNilaiRata(int $tahun, int $bulan, string $periodeTipe = 'bulanan'): float
+    public function getNilaiRata(int $tahun, int $bulan): float
     {
         $indikators = $this->indikators()->where('aktif', true)->get();
-
         if ($indikators->isEmpty()) {
             return 0;
         }
 
-        $totalNilai = 0;
+        $total = 0;
         foreach ($indikators as $indikator) {
-            $totalNilai += $indikator->getNilai($tahun, $bulan, $periodeTipe);
+            $total += $indikator->getNilai($tahun, $bulan);
         }
 
-        return round($totalNilai / $indikators->count(), 2);
+        return round($total / $indikators->count(), 2);
+    }
+
+    /**
+     * Memeriksa apakah semua indikator dalam bidang ini sudah diverifikasi
+     */
+    public function getVerifikasiAttribute(): bool
+    {
+        $indikators = $this->indikators()->where('aktif', true)->get();
+        if ($indikators->isEmpty()) {
+            return false;
+        }
+
+        $tahun = date('Y');
+        $bulan = date('m');
+
+        foreach ($indikators as $indikator) {
+            $realisasi = Realisasi::where('indikator_id', $indikator->id)
+                ->where('tahun', $tahun)
+                ->where('bulan', $bulan)
+                ->first();
+
+            if (!$realisasi || !$realisasi->diverifikasi) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

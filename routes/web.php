@@ -128,9 +128,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/targetKinerja/{targetKinerja}/approve', [TargetKinerjaController::class, 'approve'])->name('targetKinerja.approve');
     Route::get('/targetKinerja/{targetKinerja}/unapprove', [TargetKinerjaController::class, 'unapprove'])->name('targetKinerja.unapprove');
 
-    // Verifikasi KPI
-        Route::resource('verifikasi', VerifikasiController::class)->except(['create', 'edit', 'store']);
-        Route::post('/verifikasi/massal', [VerifikasiController::class, 'verifikasiMassal'])->name('verifikasi.massal');
+    // Verifikasi KPI - PENTING: Rute massal harus didefinisikan SEBELUM resource route
+    Route::post('/verifikasi/massal', [VerifikasiController::class, 'verifikasiMassal'])->name('verifikasi.massal');
 
+    // Tambahkan rute baru khusus untuk verifikasi massal
+    Route::post('/verifikasi-massal', [VerifikasiController::class, 'verifikasiMassal'])->name('verifikasi.massal.alt');
+
+    // Rute untuk approval berjenjang
+    Route::post('/verifikasi/{id}/approve-pic', [VerifikasiController::class, 'approveByPic'])->name('verifikasi.approve.pic');
+    Route::post('/verifikasi/{id}/approve-manager', [VerifikasiController::class, 'approveByManager'])->name('verifikasi.approve.manager');
+
+    Route::resource('verifikasi', VerifikasiController::class)->except(['create', 'edit', 'store']);
 });
 

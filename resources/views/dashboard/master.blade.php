@@ -1360,15 +1360,8 @@
     });
   }
 
-  // Deteksi perubahan tema
+  // Inisialisasi chart
   document.addEventListener('DOMContentLoaded', function() {
-    const themeToggle = document.querySelector('.theme-switch input');
-    if (themeToggle) {
-      themeToggle.addEventListener('change', function() {
-        console.log('Theme changed, updating charts');
-        setTimeout(updateChartsForTheme, 200); // Berikan waktu CSS untuk berubah
-      });
-    }
 
     // Setup default Chart.js global options
     setupChartDefaults();

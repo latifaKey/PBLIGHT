@@ -428,6 +428,132 @@
     font-size: 12px;
     color: var(--pln-text-secondary);
   }
+
+  .dashboard-card {
+    background: var(--pln-surface);
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--pln-border);
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-header {
+    padding: 15px 20px;
+    background: rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid var(--pln-border);
+  }
+
+  .card-header h5 {
+    margin: 0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+  }
+
+  .card-header h5 i {
+    margin-right: 10px;
+    color: var(--pln-light-blue);
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  .approval-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .approval-stat-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.03);
+    width: calc(25% - 15px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .approval-stat-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  }
+
+  .approval-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+  }
+
+  .approval-icon i {
+    color: white;
+    font-size: 16px;
+  }
+
+  .approval-details h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .approval-details p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--pln-text-secondary);
+  }
+
+  .bg-warning {
+    background-color: #ffa502;
+  }
+
+  .bg-primary {
+    background-color: #1e90ff;
+  }
+
+  .bg-info {
+    background-color: #2e86de;
+  }
+
+  .bg-success {
+    background-color: #20bf6b;
+  }
+
+  .approval-progress .progress {
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .approval-progress .progress-bar {
+    transition: width 1s ease;
+  }
+
+  @media (max-width: 768px) {
+    .approval-stat-item {
+      width: calc(50% - 10px);
+      margin-bottom: 10px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .approval-stat-item {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  }
 </style>
 @endsection
 
@@ -619,6 +745,103 @@
         </div>
       </div>
     @endforeach
+  </div>
+
+  <!-- KPI Status Card -->
+  <div class="card dashboard-card mb-4 fade-in" style="animation-delay: 0.2s">
+    <div class="card-header">
+      <h5><i class="fas fa-clipboard-check"></i> Status Approval KPI</h5>
+    </div>
+    <div class="card-body">
+      @php
+        $totalKPI = $indikators->count();
+        $belumDisetujui = $indikators->filter(function($indikator) use ($tahun, $bulan) {
+          $realisasi = App\Models\Realisasi::where('indikator_id', $indikator->id)
+            ->where('tahun', $tahun)
+            ->where('bulan', $bulan)
+            ->first();
+          return !$realisasi || $realisasi->getCurrentApprovalLevel() === 0;
+        })->count();
+
+        $disetujuiPIC = $indikators->filter(function($indikator) use ($tahun, $bulan) {
+          $realisasi = App\Models\Realisasi::where('indikator_id', $indikator->id)
+            ->where('tahun', $tahun)
+            ->where('bulan', $bulan)
+            ->first();
+          return $realisasi && $realisasi->getCurrentApprovalLevel() === 1;
+        })->count();
+
+        $disetujuiManager = $indikators->filter(function($indikator) use ($tahun, $bulan) {
+          $realisasi = App\Models\Realisasi::where('indikator_id', $indikator->id)
+            ->where('tahun', $tahun)
+            ->where('bulan', $bulan)
+            ->first();
+          return $realisasi && $realisasi->getCurrentApprovalLevel() === 2;
+        })->count();
+
+        $terverifikasi = $indikators->filter(function($indikator) use ($tahun, $bulan) {
+          $realisasi = App\Models\Realisasi::where('indikator_id', $indikator->id)
+            ->where('tahun', $tahun)
+            ->where('bulan', $bulan)
+            ->first();
+          return $realisasi && $realisasi->getCurrentApprovalLevel() === 3;
+        })->count();
+      @endphp
+
+      <div class="approval-stats">
+        <div class="approval-stat-item">
+          <div class="approval-icon bg-warning">
+            <i class="fas fa-hourglass-start"></i>
+          </div>
+          <div class="approval-details">
+            <h3>{{ $belumDisetujui }}</h3>
+            <p>Belum Disetujui</p>
+          </div>
+        </div>
+        <div class="approval-stat-item">
+          <div class="approval-icon bg-primary">
+            <i class="fas fa-check"></i>
+          </div>
+          <div class="approval-details">
+            <h3>{{ $disetujuiPIC }}</h3>
+            <p>Disetujui PIC</p>
+          </div>
+        </div>
+        <div class="approval-stat-item">
+          <div class="approval-icon bg-info">
+            <i class="fas fa-check-double"></i>
+          </div>
+          <div class="approval-details">
+            <h3>{{ $disetujuiManager }}</h3>
+            <p>Disetujui Manager</p>
+          </div>
+        </div>
+        <div class="approval-stat-item">
+          <div class="approval-icon bg-success">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="approval-details">
+            <h3>{{ $terverifikasi }}</h3>
+            <p>Terverifikasi</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="approval-progress mt-3">
+        <div class="progress" style="height: 20px;">
+          @php
+            $belumDisetujuiPercent = $totalKPI > 0 ? ($belumDisetujui / $totalKPI) * 100 : 0;
+            $disetujuiPICPercent = $totalKPI > 0 ? ($disetujuiPIC / $totalKPI) * 100 : 0;
+            $disetujuiManagerPercent = $totalKPI > 0 ? ($disetujuiManager / $totalKPI) * 100 : 0;
+            $terverifikasiPercent = $totalKPI > 0 ? ($terverifikasi / $totalKPI) * 100 : 0;
+          @endphp
+          <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $belumDisetujuiPercent }}%" title="Belum Disetujui: {{ $belumDisetujui }}"></div>
+          <div class="progress-bar bg-primary" role="progressbar" style="width: {{ $disetujuiPICPercent }}%" title="Disetujui PIC: {{ $disetujuiPIC }}"></div>
+          <div class="progress-bar bg-info" role="progressbar" style="width: {{ $disetujuiManagerPercent }}%" title="Disetujui Manager: {{ $disetujuiManager }}"></div>
+          <div class="progress-bar bg-success" role="progressbar" style="width: {{ $terverifikasiPercent }}%" title="Terverifikasi: {{ $terverifikasi }}"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 @endsection

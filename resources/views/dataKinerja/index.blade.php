@@ -377,6 +377,15 @@
                                 </select>
                             </div>
 
+                            <div class="col-md-4 mb-2 mb-md-0">
+                                <label for="status_verifikasi" class="mr-2">Status:</label>
+                                <select name="status_verifikasi" id="status_verifikasi" class="form-control">
+                                    <option value="all" {{ $statusVerifikasi == 'all' ? 'selected' : '' }}>Semua Data</option>
+                                    <option value="verified" {{ $statusVerifikasi == 'verified' ? 'selected' : '' }}>Terverifikasi</option>
+                                    <option value="unverified" {{ $statusVerifikasi == 'unverified' ? 'selected' : '' }}>Belum Terverifikasi</option>
+                                </select>
+                            </div>
+
                             <div class="col-md-4">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-filter mr-1"></i> Filter

@@ -29,6 +29,7 @@ class DataKinerjaController extends Controller
     {
         $tahun = $request->tahun ?? Carbon::now()->year;
         $bulan = $request->bulan ?? Carbon::now()->month;
+        $statusVerifikasi = $request->status_verifikasi ?? 'all';
         $user = Auth::user();
 
         // Ambil data untuk ringkasan KPI
@@ -46,7 +47,7 @@ class DataKinerjaController extends Controller
         $pilarData = $this->getDataPilar($tahun);
 
         // Data perbandingan per-bidang
-        $bidangData = $this->getDataBidang($tahun);
+        $bidangData = $this->getDataBidang($tahun, $bulan, $statusVerifikasi);
 
         // Data untuk analisis
         $analisisData = [
@@ -64,6 +65,7 @@ class DataKinerjaController extends Controller
         return view('dataKinerja.index', compact(
             'tahun',
             'bulan',
+            'statusVerifikasi',
             'totalIndikator',
             'totalIndikatorTercapai',
             'persenTercapai',
@@ -146,7 +148,37 @@ class DataKinerjaController extends Controller
                 $pilar->nilai = $pilar->getNilai($tahun, $bulan);
             }
 
-            return view('dataKinerja.pilar_index', compact('pilars', 'tahun', 'bulan'));
+            // Ambil indikator utama (indikator dengan flag is_utama = true atau 5 indikator teratas)
+            $indikatorUtama = Indikator::with(['pilar', 'bidang'])
+                ->where('aktif', true)
+                ->orderBy('is_utama', 'desc')
+                ->orderBy('prioritas', 'desc')
+                ->take(5)
+                ->get();
+
+            // Tambahkan data nilai untuk setiap indikator utama
+            foreach ($indikatorUtama as $indikator) {
+                $nilai = Realisasi::where('indikator_id', $indikator->id)
+                    ->where('tahun', $tahun)
+                    ->where('bulan', $bulan)
+                    ->where('periode_tipe', 'bulanan')
+                    ->first();
+
+                $indikator->nilai = $nilai ? $nilai->persentase : 0;
+                $indikator->nilai_aktual = $nilai ? $nilai->nilai : 0;
+                $indikator->persentase = $nilai ? $nilai->persentase : 0;
+            }
+
+            // Data untuk chart perbandingan pilar
+            $pilarChartData = $pilars->map(function($pilar) {
+                return [
+                    'kode' => $pilar->kode,
+                    'nama' => $pilar->nama,
+                    'nilai' => $pilar->nilai
+                ];
+            });
+
+            return view('dataKinerja.pilar_index', compact('pilars', 'tahun', 'bulan', 'indikatorUtama', 'pilarChartData'));
         }
     }
 
@@ -217,7 +249,7 @@ class DataKinerjaController extends Controller
             ];
         }
 
-        return view('dataKinerja.indikator', compact('indikator', 'tahun', 'realisasis', 'chartData'));
+        return view('dataKinerja.indikator', compact('indikator', 'tahun', 'realisasi', 'chartData'));
     }
 
     /**
@@ -452,7 +484,14 @@ class DataKinerjaController extends Controller
 
             // Jika masih tidak ada nilai valid, gunakan nilai default
             if ($nko <= 0) {
-                $nko = $i == 1 ? 65 : $result[$i-2]['nilai'] + rand(-2, 5);
+                // Perbaikan: Periksa apakah array sudah memiliki elemen sebelum mengakses indeks
+                if ($i == 1) {
+                    $nko = 65;
+                } else if (isset($result[$i-2])) {
+                    $nko = $result[$i-2]['nilai'] + rand(-2, 5);
+                } else {
+                    $nko = 65 + rand(-2, 5);
+                }
                 $nko = max(0, min(100, $nko));
             }
 
@@ -488,18 +527,22 @@ class DataKinerjaController extends Controller
     /**
      * Mendapatkan data bidang untuk visualisasi
      */
-    private function getDataBidang($tahun)
+    private function getDataBidang($tahun, $bulan, $statusVerifikasi)
     {
         $result = [];
         $bidangs = Bidang::all();
-        $bulan = Carbon::now()->month;
 
         foreach ($bidangs as $bidang) {
-            $result[] = [
-                'nama' => $bidang->nama,
-                'kode' => $bidang->kode,
-                'nilai' => $bidang->getNilaiRata($tahun, $bulan),
-            ];
+            $nilai = $bidang->getNilaiRata($tahun, $bulan);
+            $verifikasi = $bidang->verifikasi;
+
+            if ($statusVerifikasi === 'all' || ($statusVerifikasi === 'verified' && $verifikasi) || ($statusVerifikasi === 'unverified' && !$verifikasi)) {
+                $result[] = [
+                    'nama' => $bidang->nama,
+                    'kode' => $bidang->kode,
+                    'nilai' => $nilai,
+                ];
+            }
         }
 
         return $result;
