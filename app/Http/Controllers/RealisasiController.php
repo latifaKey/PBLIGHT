@@ -202,5 +202,42 @@ public function store(Request $request, Indikator $indikator)
         return redirect()->route('realisasi.index')->with('success', 'Realisasi berhasil diperbarui.');
     }
 
+    public function verify($id)
+    {
+        $realisasi = Realisasi::findOrFail($id);
+        $user = Auth::user();
+
+        // Hanya master admin yang bisa verifikasi
+        if (!$user->isMasterAdmin()) {
+            abort(403, 'Anda tidak memiliki hak untuk verifikasi realisasi.');
+        }
+
+        $realisasi->update([
+            'diverifikasi' => true,
+            'verifikasi_oleh' => $user->id,
+            'verifikasi_pada' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Realisasi berhasil diverifikasi.');
+    }
+
+    public function unverify($id)
+    {
+        $realisasi = Realisasi::findOrFail($id);
+        $user = Auth::user();
+
+        // Hanya master admin yang bisa batalkan verifikasi
+        if (!$user->isMasterAdmin()) {
+            abort(403, 'Anda tidak memiliki hak untuk membatalkan verifikasi realisasi.');
+        }
+
+        $realisasi->update([
+            'diverifikasi' => false,
+            'verifikasi_oleh' => null,
+            'verifikasi_pada' => null,
+        ]);
+
+        return redirect()->back()->with('success', 'Verifikasi realisasi berhasil dibatalkan.');
+    }
 
 }

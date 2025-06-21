@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Login - Dashboard Kinerja PLN</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -460,6 +460,7 @@
 
             <form method="POST" action="{{ route('login') }}" id="loginForm">
                 @csrf
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <div class="input-group">
                     <input type="text" name="email" placeholder="Email" required value="{{ old('email') }}">
                     <i class="fas fa-envelope"></i>
@@ -519,21 +520,14 @@
             createSparkles();
 
             loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-
                 // Show loading state on button
                 loginButton.classList.add('loading');
 
-                // Submit the form after a short delay to show the loading state
-                setTimeout(function() {
-                    // Show transition overlay
-                    transitionOverlay.classList.add('active');
+                // Show transition overlay
+                transitionOverlay.classList.add('active');
 
-                    // After animation completes, submit the form
-                    setTimeout(function() {
-                        loginForm.submit();
-                    }, 2200); // Wait for loading animation (slightly longer than the loading bar animation)
-                }, 1000);
+                // Tidak perlu preventDefault() dan setTimeout() karena akan menyebabkan token CSRF kedaluwarsa
+                // Form akan langsung di-submit secara normal
             });
         });
     </script>

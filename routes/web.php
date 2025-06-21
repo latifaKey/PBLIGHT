@@ -76,7 +76,7 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboard.admin_sekretaris');
     })->name('dashboard.admin.sekretaris_perusahaan');
 
-        // CRUD Akun - sudah dikonfigurasi di controller
+    // CRUD Akun - sudah dikonfigurasi di controller
     Route::resource('akun', AkunController::class);
 
     // Routes untuk Data Kinerja
@@ -86,31 +86,32 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dataKinerja/indikator/{id}', [DataKinerjaController::class, 'indikator'])->name('dataKinerja.indikator');
     Route::get('/dataKinerja/perbandingan', [DataKinerjaController::class, 'perbandingan'])->name('dataKinerja.perbandingan');
 
-     // Profile routes langsung (tidak pakai prefix) - tidak perlu ada duplikasi
+    // Profile routes langsung (tidak pakai prefix) - tidak perlu ada duplikasi
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.update-photo');
 
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/realisasi', [RealisasiController::class, 'index'])->name('realisasi.index');
-        Route::get('/realisasi/{indikator}/create', [RealisasiController::class, 'create'])->name('realisasi.create');
-        Route::post('/realisasi/{indikator}', [RealisasiController::class, 'store'])->name('realisasi.store');
-        Route::get('/realisasi/{indikator}/edit', [RealisasiController::class, 'edit'])->name('realisasi.edit');
+    // Routes untuk Realisasi
+    Route::get('/realisasi', [RealisasiController::class, 'index'])->name('realisasi.index');
+    Route::get('/realisasi/{indikator}/create', [RealisasiController::class, 'create'])->name('realisasi.create');
+    Route::post('/realisasi/{indikator}', [RealisasiController::class, 'store'])->name('realisasi.store');
+    Route::get('/realisasi/{indikator}/edit', [RealisasiController::class, 'edit'])->name('realisasi.edit');
     Route::put('/realisasi/{id}', [RealisasiController::class, 'update'])->name('realisasi.update');
+    Route::get('/realisasi/{id}/verify', [RealisasiController::class, 'verify'])->name('realisasi.verify');
+    Route::get('/realisasi/{id}/unverify', [RealisasiController::class, 'unverify'])->name('realisasi.unverify');
 
-    });
-   // Tahun Penilaian
-        Route::resource('tahunPenilaian', TahunPenilaianController::class);
-        Route::get('/tahunPenilaian/{id}/activate', [TahunPenilaianController::class, 'activate'])->name('tahunPenilaian.activate');
-        Route::get('/tahunPenilaian/{id}/lock', [TahunPenilaianController::class, 'lock'])->name('tahunPenilaian.lock');
-        Route::get('/tahunPenilaian/{id}/unlock', [TahunPenilaianController::class, 'unlock'])->name('tahunPenilaian.unlock');
+    // Tahun Penilaian
+    Route::resource('tahunPenilaian', TahunPenilaianController::class);
+    Route::get('/tahunPenilaian/{id}/activate', [TahunPenilaianController::class, 'activate'])->name('tahunPenilaian.activate');
+    Route::get('/tahunPenilaian/{id}/lock', [TahunPenilaianController::class, 'lock'])->name('tahunPenilaian.lock');
+    Route::get('/tahunPenilaian/{id}/unlock', [TahunPenilaianController::class, 'unlock'])->name('tahunPenilaian.unlock');
 
-        Route::get('/ekspor-pdf', [EksporPdfController::class, 'index'])->name('eksporPdf.index');
-        Route::post('/ekspor-pdf/bidang', [EksporPdfController::class, 'eksporBidang'])->name('eksporPdf.bidang');
-        Route::post('/ekspor-pdf/pilar', [EksporPdfController::class, 'eksporPilar'])->name('eksporPdf.pilar');
-        Route::post('/ekspor-pdf/keseluruhan', [EksporPdfController::class, 'eksporKeseluruhan'])->name('eksporPdf.keseluruhan');
+    Route::get('/ekspor-pdf', [EksporPdfController::class, 'index'])->name('eksporPdf.index');
+    Route::post('/ekspor-pdf/bidang', [EksporPdfController::class, 'eksporBidang'])->name('eksporPdf.bidang');
+    Route::post('/ekspor-pdf/pilar', [EksporPdfController::class, 'eksporPilar'])->name('eksporPdf.pilar');
+    Route::post('/ekspor-pdf/keseluruhan', [EksporPdfController::class, 'eksporKeseluruhan'])->name('eksporPdf.keseluruhan');
 
-        // Log Aktivitas
+    // Log Aktivitas
     Route::prefix('aktivitas-log')->name('aktivitasLog.')->group(function () {
         Route::get('/', [AktivitasLogController::class, 'index'])->name('index');
         Route::get('/ekspor-csv', [AktivitasLogController::class, 'eksporCsv'])->name('eksporCsv');
@@ -119,6 +120,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/hapus-multiple', [AktivitasLogController::class, 'hapusMultiple'])->name('hapusMultiple');
         Route::get('/{id}', [AktivitasLogController::class, 'show'])->name('show')->where('id', '[0-9]+');
     });
+
     // Routes untuk Target Kinerja
     Route::get('/targetKinerja', [TargetKinerjaController::class, 'index'])->name('targetKinerja.index');
     Route::get('/targetKinerja/create', [TargetKinerjaController::class, 'create'])->name('targetKinerja.create');

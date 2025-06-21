@@ -566,7 +566,7 @@
           <div class="d-flex justify-content-between align-items-center">
             <h5 class="m-0">Data Bulan: <strong>{{ date('F Y', mktime(0, 0, 0, $bulan, 1, $tahun)) }}</strong></h5>
             <div>
-              <a href="{{ route('realisasi.create') }}" class="btn btn-primary">
+              <a href="{{ route('realisasi.index') }}" class="btn btn-primary">
                 <i class="fas fa-plus-circle mr-1"></i> Input Realisasi
               </a>
             </div>
@@ -681,7 +681,7 @@
               <div class="missing-inputs-item">
                 <h4 class="missing-inputs-item-title">{{ $indikator->nama }}</h4>
                 <span class="missing-inputs-item-code">{{ $indikator->kode }}</span>
-                <a href="{{ route('realisasi.create', ['indikator_id' => $indikator->id]) }}" class="btn btn-sm btn-primary float-right">
+                <a href="{{ route('realisasi.create', ['indikator' => $indikator->id]) }}" class="btn btn-sm btn-primary float-right">
                   <i class="fas fa-plus-circle"></i> Input
                 </a>
               </div>
@@ -695,7 +695,7 @@
 
         @if($missingInputs->count() > 0)
           <div class="missing-inputs-action">
-            <a href="{{ route('realisasi.create') }}" class="btn btn-primary">
+            <a href="{{ route('realisasi.index') }}" class="btn btn-primary">
               <i class="fas fa-plus-circle mr-1"></i> Input Semua KPI
             </a>
           </div>
@@ -735,10 +735,10 @@
           </div>
 
           <div>
-            <a href="{{ route('realisasi.edit', ['indikator_id' => $indikator->id]) }}" class="btn btn-sm btn-primary">
+            <a href="{{ route('realisasi.edit', ['indikator' => $indikator->id]) }}" class="btn btn-sm btn-primary">
               <i class="fas fa-edit"></i>
             </a>
-            <a href="{{ route('realisasi.show', ['indikator_id' => $indikator->id]) }}" class="btn btn-sm btn-info">
+            <a href="{{ route('dataKinerja.indikator', ['id' => $indikator->id]) }}" class="btn btn-sm btn-info">
               <i class="fas fa-eye"></i>
             </a>
           </div>

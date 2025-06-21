@@ -376,7 +376,7 @@
             </div>
 
             <div class="detail-actions">
-                <a href="{{ route('realisasi.edit', $nilaiKPI->id) }}" class="btn btn-warning btn-action">
+                <a href="{{ route('realisasi.edit', ['indikator' => $nilaiKPI->indikator_id]) }}" class="btn btn-warning btn-action">
                     <i class="fas fa-edit"></i> Edit Realisasi
                 </a>
                 @if(auth()->user()->isMasterAdmin() && !$nilaiKPI->diverifikasi)
