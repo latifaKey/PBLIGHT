@@ -23,6 +23,8 @@ class Indikator extends Model
         'target',
         'urutan',
         'aktif',
+        'is_utama',
+        'prioritas',
     ];
 
     // Casting tipe data otomatis
@@ -30,6 +32,8 @@ class Indikator extends Model
         'bobot' => 'float',
         'target' => 'float',
         'aktif' => 'boolean',
+        'is_utama' => 'boolean',
+        'prioritas' => 'integer',
     ];
 
     /**

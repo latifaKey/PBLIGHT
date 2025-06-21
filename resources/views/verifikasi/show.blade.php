@@ -594,24 +594,62 @@
         </div>
     </div>
 
-    <div class="action-buttons fade-in" style="animation-delay: 0.4s">
-        @if(!isset($isPeriodeLocked) || !$isPeriodeLocked)
-        <form action="{{ route('verifikasi.update', $realisasi->id) }}" method="POST" class="me-2">
-            @csrf
-            @method('PUT')
-            <button type="submit" class="btn btn-success" onclick="return confirm('Anda yakin ingin memverifikasi nilai KPI ini?')">
-                <i class="fas fa-check"></i> Verifikasi KPI
-            </button>
-        </form>
+    <div class="detail-footer">
+        <div class="btn-group">
+            <a href="{{ route('verifikasi.index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Kembali
+            </a>
 
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalTolak">
-            <i class="fas fa-times"></i> Tolak KPI
-        </button>
-        @else
-        <div class="alert alert-warning">
-            <i class="fas fa-lock"></i> Periode penilaian terkunci. Tidak dapat melakukan verifikasi atau penolakan.
+            @if(!isset($isPeriodeLocked) || !$isPeriodeLocked)
+                @if(Auth::user()->role === 'asisten_manager')
+                    <form action="{{ route('verifikasi.update', $realisasi->id) }}" method="POST" class="d-inline">
+                        @csrf
+                        @method('PUT')
+                        <button type="submit" class="btn btn-success" onclick="return confirm('Yakin verifikasi KPI ini?')">
+                            <i class="fas fa-check-circle"></i> Verifikasi
+                        </button>
+                    </form>
+
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                        <i class="fas fa-times-circle"></i> Tolak
+                    </button>
+                @endif
+
+                @if(str_contains(Auth::user()->role, 'pic_'))
+                    @if(!$realisasi->isApprovedByPic())
+                        <form action="{{ route('verifikasi.approve.pic', $realisasi->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-primary" onclick="return confirm('Yakin menyetujui KPI ini sebagai PIC?')">
+                                <i class="fas fa-check"></i> Setujui (PIC)
+                            </button>
+                        </form>
+                    @else
+                        <button class="btn btn-outline-primary" disabled>
+                            <i class="fas fa-check"></i> Sudah Disetujui PIC
+                        </button>
+                    @endif
+                @endif
+
+                @if(Auth::user()->role === 'manager')
+                    @if($realisasi->isApprovedByPic() && !$realisasi->isApprovedByManager())
+                        <form action="{{ route('verifikasi.approve.manager', $realisasi->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-info" onclick="return confirm('Yakin menyetujui KPI ini sebagai Manager?')">
+                                <i class="fas fa-check-double"></i> Setujui (Manager)
+                            </button>
+                        </form>
+                    @elseif($realisasi->isApprovedByManager())
+                        <button class="btn btn-outline-info" disabled>
+                            <i class="fas fa-check-double"></i> Sudah Disetujui Manager
+                        </button>
+                    @else
+                        <button class="btn btn-outline-secondary" disabled>
+                            <i class="fas fa-clock"></i> Menunggu Persetujuan PIC
+                        </button>
+                    @endif
+                @endif
+            @endif
         </div>
-        @endif
     </div>
 </div>
 

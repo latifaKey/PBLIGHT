@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Models\AktivitasLog;
 
@@ -45,11 +46,14 @@ class AuthController extends Controller
 
             if (!$user) {
                 // Log untuk debugging
-                \Log::warning('Login attempt failed: User not found', [
+                Log::warning('Login attempt failed: User not found', [
                     'email' => $request->email,
                     'ip' => $request->ip(),
                     'user_agent' => $request->userAgent()
                 ]);
+
+                // Regenerasi token CSRF untuk menghindari error 419
+                $request->session()->regenerateToken();
 
                 return back()
                     ->withInput($request->only('email'))
@@ -65,7 +69,7 @@ class AuthController extends Controller
                 $request->session()->regenerate();
 
                 // Log sukses login
-                \Log::info('User logged in successfully', [
+                Log::info('User logged in successfully', [
                     'user_id' => $user->id,
                     'email' => $user->email,
                     'role' => $user->role,
@@ -93,7 +97,7 @@ class AuthController extends Controller
                 }
 
                 // Jika role tidak diperbolehkan
-                \Log::warning('Login attempt failed: Invalid role', [
+                Log::warning('Login attempt failed: Invalid role', [
                     'user_id' => $user->id,
                     'email' => $user->email,
                     'role' => $user->role,
@@ -101,15 +105,21 @@ class AuthController extends Controller
                 ]);
 
                 Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
                 return redirect()->route('login')->with('error', 'Role Anda tidak diizinkan untuk login.');
             }
 
             // Log password salah
-            \Log::warning('Login attempt failed: Invalid password', [
+            Log::warning('Login attempt failed: Invalid password', [
                 'email' => $request->email,
                 'ip' => $request->ip(),
                 'user_agent' => $request->userAgent()
             ]);
+
+            // Regenerasi token CSRF untuk menghindari error 419
+            $request->session()->regenerateToken();
 
             // Jika login gagal
             return back()
@@ -117,11 +127,14 @@ class AuthController extends Controller
                 ->with('error', 'Email atau password salah. Silakan coba lagi.');
 
         } catch (\Exception $e) {
-            \Log::error('Login error: ' . $e->getMessage(), [
+            Log::error('Login error: ' . $e->getMessage(), [
                 'email' => $request->email,
                 'ip' => $request->ip(),
                 'trace' => $e->getTraceAsString()
             ]);
+
+            // Regenerasi token CSRF untuk menghindari error 419
+            $request->session()->regenerateToken();
 
             return back()
                 ->withInput($request->only('email'))

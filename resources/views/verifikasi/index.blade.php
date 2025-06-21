@@ -601,7 +601,7 @@
     </div>
 
     @if($realisasis->count() > 0)
-        <form action="{{ route('verifikasi.massal') }}" method="POST" id="form-verifikasi-massal">
+        <form action="/verifikasi-massal" method="POST" id="form-verifikasi-massal">
             @csrf
             <div class="mb-3">
                 <button type="submit" class="btn btn-success" id="btn-verifikasi-massal" disabled>
@@ -623,6 +623,7 @@
                             <th width="15%">Bidang</th>
                             <th width="10%">Periode</th>
                             <th width="10%">Nilai</th>
+                            <th width="10%">Status</th>
                             <th width="10%">Uploaded By</th>
                             <th width="15%">Aksi</th>
                         </tr>
@@ -642,6 +643,11 @@
                                 <td>{{ $kpi->indikator->bidang->nama }}</td>
                                 <td>{{ $kpi->tahun }}-{{ $kpi->bulan }}</td>
                                 <td>{{ $kpi->nilai }}</td>
+                                <td>
+                                    <span class="badge bg-{{ $kpi->approval_color }}">
+                                        {{ $kpi->approval_status }}
+                                    </span>
+                                </td>
                                 <td>{{ $kpi->user->name }}</td>
                                 <td>
                                     <div class="btn-group" role="group">
@@ -718,17 +724,51 @@
         // Konfirmasi sebelum submit massal
         if (form) {
             form.addEventListener('submit', function(e) {
+                e.preventDefault(); // Mencegah submit default
+
                 const selected = Array.from(checkItems).filter(cb => cb.checked);
                 if (selected.length === 0) {
-                    e.preventDefault();
                     alert('Silakan pilih setidaknya satu KPI untuk diverifikasi.');
                     return false;
                 }
 
                 if (!confirm('Yakin ingin memverifikasi ' + selected.length + ' KPI terpilih?')) {
-                    e.preventDefault();
                     return false;
                 }
+
+                // Debug info
+                console.log('Form disubmit ke:', form.action);
+                console.log('Method:', form.method);
+                console.log('Selected IDs:', selected.map(cb => cb.value));
+
+                // Buat form baru dan submit secara manual
+                const newForm = document.createElement('form');
+                newForm.method = 'POST';
+                newForm.action = '/verifikasi-massal';
+                newForm.style.display = 'none';
+
+                // Tambahkan CSRF token
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                if (csrfToken) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = csrfToken;
+                    newForm.appendChild(csrfInput);
+                }
+
+                // Tambahkan nilai IDs yang dipilih
+                selected.forEach(cb => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'nilai_ids[]';
+                    input.value = cb.value;
+                    newForm.appendChild(input);
+                });
+
+                // Tambahkan form ke body dan submit
+                document.body.appendChild(newForm);
+                newForm.submit();
             });
         }
 

@@ -193,8 +193,6 @@
 </style>
 @endsection
 
-@extends('layouts.app')
-
 @section('content')
 <div class="dashboard-content">
     <!-- Header -->
